@@ -3,12 +3,12 @@ window.onload = function(){
   localStorage.removeItem('broken_image');
   let search_param = new URL(location.href).search.slice(8).replace(/\+/g, " ");
   let search_key = document.getElementsByClassName("search_key")[0];
+  search_key.innerHTML = capitalizeFirstLetter(fn_decodeURI(search_param))+" Photos"; //第一個字大寫
   check_login_status().then(function(login_status_result) {
     loadDoc(search_param).then(function(result) {
       let image_data = JSON.parse(result);
       if(image_data.data.length>0){
         similar_keyword(search_param);
-        search_key.innerHTML = capitalizeFirstLetter(search_param)+" Photos"; //第一個字大寫
         get_pic_column_data(image_data).then(function(pic_column_data) {
           addElementDiv("recommand_pic",pic_column_data.image_for_column_1,0);
           addElementDiv("recommand_pic",pic_column_data.image_for_column_2,1);
@@ -26,6 +26,15 @@ window.onload = function(){
   })
 };
 
+function fn_decodeURI(str_url) {
+  //將分行符號刪除
+  str_url = str_url.replace(/\n/g,"");
+  //解碼使用decodeURI，編碼使用encodeURI
+  let dec = decodeURI(str_url);
+  return dec;
+}
+
+
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -35,7 +44,7 @@ function capitalizeFirstLetter(string) {
 //相似推薦
 function similar_keyword(search_param){  
   let xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "/similar_word", true);
+  xhttp.open("POST", "/photo/search/similar_word", true);
   xhttp.onload = function() {
     if (this.readyState == 4 && this.status == 200) {
       let similar_key = document.getElementsByClassName("similar_key")[0];
