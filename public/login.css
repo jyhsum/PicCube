@@ -1,0 +1,133 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    list-style-type: none;
+    font-family: "Microsoft JhengHei",muli,Helvetica,Arial,sans-serif;
+}
+
+body{
+    background-image: url(./picture/login_page_background.jpg); 
+    background-size:cover;
+}
+
+#tab-container{ 
+    width:50%; 
+    margin: auto;
+    margin-top: 100px;
+}
+#tab-container > ul{ 
+    display:block; 
+    margin:0;
+    list-style:none;
+    
+}
+.tab-title{
+    list-style:none;
+    padding-left: 23%;
+}
+#tab-container > ul > li{ 
+    display:inline-block; 
+    vertical-align:top;
+    font-family:'微軟正黑體'; 
+    margin:0 -1px -1px 0 ; 
+    border:1px solid #BCBCBC; 
+    height:50px; 
+    line-height:50px; 
+    background:#cdcdcd;
+    padding:0 15px;
+    list-style:none; 
+    box-sizing:border-box;
+    width: 35%;
+    text-align:center;
+    border-radius: 10px 10px 0px 0px;
+}
+#tab-container >  ul > li a{ 
+    color:#000; 
+    text-decoration:none;
+}
+#tab-container > ul > li.active{ 
+    border-bottom:1px solid #fff; 
+    background:#fff;
+    opacity:0.9;
+}
+
+#tab-container > .tab-inner{ 
+    clear:both; 
+    color:#000; 
+    border:1px #BCBCBC solid;
+    background-color: #fff;
+    opacity:0.8;
+}
+.tab-inner{ 
+    padding:15px; 
+    height:600px;
+    text-align:center;
+    line-height:10px;
+    border-radius: 25px;
+}
+
+
+.FB_login{
+    border:2px none;
+    background-color: #3b5998;
+    color: white;
+    margin-top:50px;
+    margin-bottom: 20px;
+    height: 50px;
+    width: 50%;
+}
+
+
+.form-group{
+    margin-bottom: 20px;
+    padding:3px;
+    height: 65px;
+}
+
+#user_password{
+    margin-bottom: 10px;
+}
+
+.input_email,.input_password{
+    font-size:20px;
+    margin-bottom: 20px;
+}
+
+.form-separator p{
+    font-size:20px;
+}
+
+input{
+    font-size:18px;
+    height: 30px;
+    width: 50%;
+}
+
+
+.sign_btn{
+    border:2px none;
+    background-color: black;
+    color: white;
+    margin-top:30px;
+    margin-bottom: 20px;
+    height: 50px;
+    width: 50%;
+
+}
+
+.input_password span a{
+    font-size:18px;
+    color: #BCBCBC;
+}
+
+.form-separator{
+    margin-top: 18px;
+    margin-bottom: 18px;
+    height: 20px;
+}
+
+

@@ -1,0 +1,70 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    list-style-type: none;
+    font-family: "Microsoft JhengHei",muli,Helvetica,Arial,sans-serif;
+}
+
+.user_info_area{
+    padding-top: 50px;
+    height: 500px;
+    width: 100%;
+    text-align:center;
+    box-shadow:2px 0px 5px #000;
+    margin-bottom: -50px;
+    
+}
+
+.user_pic_url{
+    border-radius: 50%;
+}
+
+.user_pic{
+    height: 230px;
+    width: 230px;
+    margin:0 auto;
+    margin-top: 0px;
+    position:relative;
+    display: inline-block;
+    
+}
+
+.user_pic img{
+    height: 230px;
+    width: 230px;
+    display:block; 
+    margin:auto;
+}
+
+
+.user_name{
+    font-size: 2vw;
+    margin:0 auto;
+    padding-top: 60px; 
+}
+
+.like_info{
+    font-size: 1.3vw;
+    margin:0 auto;
+    padding-top: 50px;
+}  
+
+
+input[type="file"] {
+    display: none;
+}
+
+.upload_button{
+    margin-top: 50px;
+    height: 230px;
+    width: 230px;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 10px;
+    color:grey;
+}

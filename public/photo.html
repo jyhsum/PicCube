@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PicCube</title>
+	<link rel="stylesheet" type="text/css" href="default.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="photo.css" media="all" />
+	<link rel="icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+
+</head>
+<body>
+	<div class="header">
+		<div class="login">
+			<ul>
+				<li class="item" ><a href="/login.html#tab01" id="sign_up_button"><button>Sign Up</button></a></li>
+				<li class="item" ><a href="/login.html#tab02" id="sign_in_button"><button>Sign In</button></a></li> 
+				<li class="item" ><a href="/member.html" id="profile_button"><button type="button">Profile</button></a></li>
+				<li class="item" id="log_out_button"><img src="./picture/icon/logout.png" id="logout_pic" onclick= "logout();"></li>
+				
+			</ul>
+		</div>
+		<div class ="home">
+			<a href="/"><img src="./picture/icon/sugar.png" alt=""></a>
+		</div>
+		<div class="search_top">
+			<form method ="get" accept-charset="UTF-8" id="search_top" action = "photo.html">
+				<input type="text" name="search" placeholder="Search for photos..." >
+				<input type="submit" value="Go">
+			</form>
+		</div>
+
+	</div>
+
+
+	<div class="main" id="main">
+		<h1 class="search_key"></h1>
+		<div class="similar_key"></div>
+	</div>
+
+	<div class="recommand_pic" id="recommand_pic"></div>
+	<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+
+</body>
+<script src="js/lib.js"></script>
+<script src="js/photo.js"></script>
+</html>

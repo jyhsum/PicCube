@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title> PicCube </title>
+  <link rel="stylesheet" type="text/css" href="default.css" media="all" />
+  <link rel="stylesheet" type="text/css" href="login.css" media="all" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link rel="icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+</head>
+<body>
+  <div class="header">
+		<div class ="home">
+        <a href="/"><img src="./picture/icon/sugar.png" alt=""></a>
+    </div>
+		<div class="search_top">
+      <form method ="get" accept-charset="UTF-8" id="search_top" action = "photo.html">
+        <input type="text" name="search" placeholder="Search for photos..." >
+        <input type="submit" value="Go">
+      </form>
+    </div>
+  </div>
+  
+  <div id="tab-container">
+    
+    <ul class="tab-title">
+        <li><a href="#tab01">Sign up</a></li>
+        <li><a href="#tab02">Login</a></li>
+    </ul>
+
+    <div id="tab01" class="tab-inner">
+      <button onClick="fb_login();" class ="FB_login">Sign up with Facebook</button>
+
+      <div class="form-separator">
+        <p>or</p>
+      </div>
+
+      <form action="/signup" accept-charset="UTF-8" method="post">
+      
+        <div class="form-group">
+          <div class="input_email">
+            Email address
+          </div>         
+          <input class="form-control" autofocus="autofocus"  value="" type="email" name="email" id="user_email" required="required"/>
+        </div> <!-- close .form-group -->
+
+        <div class="form-group">
+          <div class="input_password">
+            Password
+          </div>    
+          <input class="form-control" autocomplete="off" type="password" name="password" id="user_password" required="required"/>
+        </div> <!-- close .form-group -->
+
+        <div class="form-group">
+            <div class="input_email">
+              Name
+            </div>         
+            <input class="form-control" autofocus="autofocus" name="name" id="user_name" required="required"/>
+          </div> <!-- close .form-group -->
+
+
+        <div class="form-group">
+          <input type="submit" name="commit" value="Signup" class="sign_btn" tabindex="3" data-disable-with="···" />
+        </div> <!-- close .form-group -->
+      </form>
+    </div>
+
+
+    <div id="tab02" class="tab-inner">
+
+    <button onClick="fb_login();" class ="FB_login">Login with Facebook</button>
+      <div class="form-separator">
+        <p>or</p>
+      </div>
+      <form action="/signin" accept-charset="UTF-8" method="post">
+
+        <div class="form-group">
+          <div class="input_email">
+            Email address
+          </div>
+          <input class="form-control" autofocus="autofocus"  value="" type="email" name="email" id="user_email" required="required" />
+        </div> <!-- close .form-group -->
+
+        <div class="form-group">
+          <div class="input_password">
+            Password
+            <!-- <span><a tabindex="4" href="/users/password/new">Forgot?</a></span> -->
+          </div> 
+          
+          <input class="form-control" autocomplete="off"  type="password" name="password" id="user_password" required="required"/>
+          <span id="respond_msg"></span>
+          
+        </div> <!-- close .form-group -->
+        <div class="form-group">
+            <input type="submit" name="commit" value="Login" class="sign_btn" tabindex="3" data-disable-with="···" />
+        </div> <!-- close .form-group -->
+
+      </form>
+    </div>
+  </div>
+</body>
+
+
+
+
+<script>
+  // This is called with the results from from FB.getLoginStatus().
+  function statusChangeCallback(response) {
+    
+    if (response.status === 'connected') {
+      // Logged into your app and Facebook.
+      //testAPI();
+
+      FB.api('/me','GET',{"fields":"id,name,gender,email"}, function(response_me) {
+        console.log('Successful login for: ' + response_me.name);
+        if(!response_me.email){
+          window.alert("Please provide your email on Facebook!");
+        }
+        else{
+
+          let xhr=new XMLHttpRequest();
+          let url = "/fb_signin";
+          xhr.open("POST", url, true);
+          xhr.onreadystatechange = function(){
+            if(xhr.readyState===4){
+              console.log("FB login success");
+              window.alert(xhr.responseText);
+              window.location="/";
+            }
+          };
+          let data = {
+            provider:"facebook",
+            access_token:response.authResponse.accessToken,
+            name:response_me.name,
+            email:response_me.email
+          }
+          let json_data=JSON.stringify(data);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(json_data);
+        }
+      });
+
+    } 
+    else if (response.status === 'not_authorized'){
+      //user 有登入 FB 但是沒有授權
+      window.alert("Please login or sign up.");
+      window.location="/login.html";
+    }
+    else {
+      //user 沒有登入FB
+      window.alert("Please check if you have logged in Facebook.");
+      window.location="/login.html";
+    } 
+
+
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '582804072183655',
+      cookie     : true,  // enable cookies to allow the server to access the session
+      xfbml      : true,  // parse social plugins on this page
+      version    : 'v3.2' // The Graph API version to use for the call
+    });
+
+    // FB.getLoginStatus(function(response) {
+    //   statusChangeCallback(response);
+    // });
+
+  };
+  function fb_login(){
+    FB.login(function(response) {
+    if (response.status === 'connected') {
+      console.log("Login FB!");
+      checkLoginState();
+      // Logged into your app and Facebook.
+    } else {
+      console.log("login FB error")
+      // The person is not logged into this app or we are unable to tell. 
+    }
+  }, {scope: 'public_profile,email'});
+
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+
+
+
+  $(function tab (){
+    let r = window.location.href;
+    let tab_num = 0;
+    if(r.match('tab')!=null){
+      //url 有 tab 參數
+      tab_num = Number(r.split('#')[1].slice(-1))-1;   
+    }
+    let $li = $('ul.tab-title li');
+      $($li. eq(tab_num) .addClass('active').find('a').attr('href')).siblings('.tab-inner').hide();
+      $li.click(function(){
+        $($(this).find('a'). attr ('href')).show().siblings ('.tab-inner').hide();
+        $(this).addClass('active'). siblings ('.active').removeClass('active');
+      });
+  });
+
+
+
+
+</script>
+
+
+
+</html>

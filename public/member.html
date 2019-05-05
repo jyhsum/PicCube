@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>PicCube</title>
+	<script src="/js/member.js"></script>
+	<script src="/js/lib.js"></script>
+	<link rel="stylesheet" type="text/css" href="default.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="member.css" media="all" />
+	<link rel="icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+</head>
+<body>
+	<div class="header">
+		<div class="login">
+			<ul>
+				<li class="item"><a href="/member.html" id="profile_button"><button type="button"></button></a></li>
+				<li class="item" id="log_out_button"><img src="./picture/icon/logout.png" id="logout_pic" onclick= "logout();"></li>
+			</ul>
+		</div>
+		<div class ="home">
+			<a href="/"><img src="./picture/icon/sugar.png" alt=""></a>
+		</div>
+		<div class="search_top">
+			<form method ="get" accept-charset="UTF-8" id="search_top" action = "photo.html">
+				<input type="text" name="search" placeholder="Search for photos..." >
+				<input type="submit" value="Go">
+			</form>
+		</div>
+	</div>
+	
+	<div class="user_info_area">	
+		<label class="upload_button">
+			<div class="user_pic">	
+				<img class="user_pic_url" title="Click to Upload photo." src="./picture/default_profile_pic.png">
+			</div>			
+				Click to Upload 
+			<input type="file" name="upload_pic" id="file-uploader" accept="image/png, image/jpeg">	
+		</label>
+		<div class="user_name"></div>
+		<div class="like_info"></div>
+	</div> 
+  
+	<div class="recommand_pic" style="background-color: #D8E7E8;">
+
+  </div>
+		
+
+	<footer>
+
+	</footer>
+
+
+</body>
+
+
+
+
+</html>
+

@@ -1,0 +1,196 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    list-style-type: none;
+    font-family: "Microsoft JhengHei",muli,Helvetica,Arial,sans-serif;
+}
+
+div.header{
+    margin: 0;
+    font-weight: 600;
+    position: fixed;
+    top:0;
+    z-index: 10;
+    background-color:black;
+    height: 60px;
+    width: 100%;
+    filter:alpha(opacity=70);opacity:0.7;zoom:1;
+    line-height: 60px;
+}
+
+div.login{
+    float: right;
+    padding-left: 2vw;
+    height: 60px;
+}
+
+div.login li{
+    display: inline; 
+    margin:1vw;
+    
+}
+
+
+div.login ul li button{
+    font-size: 110%;
+    background-color:black;
+    color: white;
+    border:2px none;
+    font-weight: 600;
+}
+
+img#logout_pic{
+    vertical-align:middle;
+    padding-right: 10px;
+}
+
+
+div.home{
+    height: 50px;
+    width: 50px;
+    float:left;
+    padding-left: 20px;
+    padding-top: 10px;
+}
+
+
+.recommand_pic{
+    margin-top: 50px;
+    width: 100%;
+    background-color: white;
+    filter:alpha(opacity=50);opacity:0.7;zoom:1;
+    display: flex;
+    flex-direction: row;
+    color: white;
+}
+
+.pic_column:first-child{
+    margin-left: 13%;  
+
+}
+
+.pic_column{
+    margin: 40px 0px;
+    width: 25%;
+    text-align: center;
+    display: flex;
+    flex-direction: column
+}
+
+.hot_image{
+    max-width: 100%;
+    padding: 0;
+    width:auto;
+    height:auto;
+    max-height:100%;
+}
+
+#profile_button{
+    color: white;
+    text-decoration:none;
+}
+
+
+div.pic_div{
+    width: 85%;
+    margin-top: 5%;
+    margin-bottom: 40px;
+    position: relative;
+    
+}
+
+div.pic_div:hover > button {
+    display: block;
+}
+
+
+div.pic_div button{
+    font-size: 1.5vh;
+    border: none;
+    font-weight: bold;
+    height: 4vh;
+    width: 4vw;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 20px;
+    right: 10px; 
+    z-index:99;
+    display: none;
+}
+
+
+div.pic_div button.unclicked{
+    color: darkblue;
+    background-color: white;
+}
+
+div.pic_div button.clicked{
+    color: white;
+    background-color: #F08080;
+}
+
+div.pic_div a{
+    font-size: 1.5vh;
+    color:darkblue;
+    text-decoration:none;
+    border: none;
+    font-weight: bold;
+    height: 4vh;
+    width: 4vw;
+    line-height: 4vh;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 20px;
+    right: 100px; 
+    z-index:99;
+    display: none;
+    background-color: white;
+    
+}
+
+div.pic_div:hover > a {
+    display: block;
+}
+
+
+.search_top{
+    margin-left: 10vw;
+    float:left;
+}
+
+div.header input[type=text] {
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0 15px;
+    color: #111;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    height: 40px;
+    width: 40vw;
+    font-size: 14px;
+    font-family: muli,Helvetica,Arial,sans-serif;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    border-radius: 4px;
+} 
+
+div.header input[type=submit] {
+    color: gray;
+    border: none;
+    height: 20px;
+    width: 40px;
+    font-size: 15px;
+    outline: none;
+    font-family: muli,Helvetica,Arial,sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-left: -50px;
+    border-radius: 4px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
