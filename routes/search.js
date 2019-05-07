@@ -47,15 +47,29 @@ app.get('/:keyword', function(req, res) {
   else{
     if (escape(search_keyword).indexOf("%u") !=-1){
       translate_keyword(search_keyword).then(function(translate_result){
-        console.log("translate_result:"+translate_result);
-        start_search(paging,translate_result,search_keyword).then(function(search_result){
-          res.send(search_result);
+        start_search(paging,translate_result.toLowerCase(),search_keyword).then(function(search_result){
+          similar_keyword(translate_result).then((result)=>{
+            if(result.similar_result){
+              res.send({search_result:search_result,similar_result:result.similar_result});
+            }
+            else{
+              res.send({search_result:search_result});
+            }
+          });
+          
         });
       });
     }
     else{
       start_search(paging,search_keyword,search_keyword).then(function(search_result){
-        res.send(search_result);
+        similar_keyword(search_keyword).then((result)=>{
+          if(result.similar_result){
+            res.send({search_result:search_result,similar_result:result.similar_result});
+          }
+          else{
+            res.send({search_result:search_result});
+          }
+        });
       });
     }
   }
@@ -63,15 +77,14 @@ app.get('/:keyword', function(req, res) {
 });
 
 
-app.post('/search/similar_word', function(req, res){
-  let search_keyword = req.body.search_keyword;
-  similar_keyword(search_keyword).then((result)=>{
-    console.log(result);
-    if(result.similar_result){
-      res.send({similar_result:result.similar_result});
-    }
-  });
-});
+// app.post('/search/similar_word', function(req, res){
+//   let search_keyword = req.body.search_keyword;
+//   similar_keyword(search_keyword).then((result)=>{
+//     if(result.similar_result){
+//       res.send({similar_result:result.similar_result});
+//     }
+//   });
+// });
 
 function check_validStr(str){
   let validStr = new Array("<",">",".","!","\/","\\"); //列出所有被禁止的方法字元
@@ -95,14 +108,13 @@ function start_search(paging,search_keyword,origin_keyword){
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * FROM `image_data` WHERE `tag` LIKE "'+search_keyword+'";',function(error, results, fields){
+      connection.query('SELECT * FROM `image_data` WHERE `tag` LIKE "'+search_keyword+'"ORDER BY `provider` ASC;',function(error, results, fields){
         connection.release();
         if(error){
           console.log(error);
           return mainReject({error:"Query image_data Error"});
         }
         else{
-          let similar_result;
           let total = results.length;
           let total_page = Math.ceil(total/15);
           let lastPageCount = total%15;
@@ -185,8 +197,7 @@ function similar_keyword(search_keyword){
           let similar_words = [];
           if(similar_result.length>0){
             for(let i=0;i<similar_result.length;i++){
-              if(similar_result[i].tag_name != search_keyword){
-                console.log(similar_result[i].tag_name);
+              if(similar_result[i].tag_name.toLowerCase() !== search_keyword.toLowerCase()){
                 similar_words.push(similar_result[i].tag_name);
               }   
             }

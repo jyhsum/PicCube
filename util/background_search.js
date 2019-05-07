@@ -9,7 +9,7 @@ charset(superagent);
 const cheerio = require('cheerio');
 const schedule = require('node-schedule');
 const Nightmare = require('nightmare');
-const nightmare = Nightmare({ show: true, waitTimeout: 6000 });
+const nightmare = Nightmare({ show: false, waitTimeout: 6000 });
 const vo = require('vo');
 
 
@@ -180,32 +180,32 @@ function pexels_background_search(type,start){
         yield nightmare.viewport(1024, 768);
         var previousHeight, currentHeight=0;
         while(previousHeight !== currentHeight) {
-        previousHeight = currentHeight;
-        var currentHeight = yield nightmare.evaluate(function() {
-            return document.body.scrollHeight;
-        });
-        yield nightmare.scrollTo(currentHeight, 0)
-        .wait(1000);
+            previousHeight = currentHeight;
+            var currentHeight = yield nightmare.evaluate(function() {
+                return document.body.scrollHeight;
+            });
+            yield nightmare.scrollTo(currentHeight, 0)
+            .wait(2000);
         }
         var urls = yield nightmare.evaluate(function() {
-        let image_url =[];
-        let image_source_url =[];
-        document.querySelectorAll('.photo-item__img').forEach((el,index)=>{
-            image_url.push(el.src);
-        });
+            let image_url =[];
+            let image_source_url =[];
+            document.querySelectorAll('.photo-item__img').forEach((el,index)=>{
+                image_url.push(el.src);
+            });
 
-        document.querySelectorAll('.js-photo-link.photo-item__link').forEach((el,index)=>{
-            image_source_url.push(el.href);
-        });
-        return ({image_url:image_url,image_source_url:image_source_url});
+            document.querySelectorAll('.js-photo-link.photo-item__link').forEach((el,index)=>{
+                image_source_url.push(el.href);
+            });
+            return ({image_url:image_url,image_source_url:image_source_url});
         });
         yield nightmare.end();
         return urls;
     };
     
     vo(run)(function(err,data) {
-        if(data.image_source_url.length>30){
-            for(let i=start;i<data.image_source_url.length;i++){         
+        if(data.image_url){
+            for(let i=start;i<data.image_url.length;i++){         
                 let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
                 let provider = "pexels"       
                 let insert_image_data = [data.image_source_url[i],data.image_url[i],provider,type,image_id];
