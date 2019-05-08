@@ -39,7 +39,7 @@ app.post('/signup', function(req, res) {
                 throw error;
               });
             }else if (repeat_results.length > 0) {
-              res.send('信箱已註冊！');
+              res.send('email already used!');
             }
             else{
               connection.query(insert_user_data, insert, function(error, results, fields){
@@ -73,10 +73,10 @@ app.post('/signup', function(req, res) {
 });
   
 app.post('/signin', function(req, res) {
-    console.log(req.body);
-    let email = req.body.email;
-    let password = req.body.password;
-  
+  console.log(req.body);
+  let email = req.body.email;
+  let password = req.body.password;
+  if(check_mail(email)){
     let query_user_data = "SELECT * FROM user WHERE `email`='"+email+"';"
     mysql.pool.getConnection(function(error, connection) {
       if(error){
@@ -111,7 +111,10 @@ app.post('/signin', function(req, res) {
         }
       });
     });
-  
+  }
+  else{
+    res.send('信箱格式錯誤！');
+  }
 });
   
 app.post('/fb_signin', function(req, res) {
@@ -143,9 +146,8 @@ app.post('/fb_signin', function(req, res) {
             connection.rollback(function() {
               throw error;
             });
-            }if (result.length == 0) { 
-            console.log("尚未註冊");
-            console.log(insert);
+            }
+            if (result.length == 0) { 
             connection.query(insert_user_data, insert, function(error, result, fields){
               connection.release();
               if(error){
@@ -178,7 +180,6 @@ app.post('/fb_signin', function(req, res) {
             res.setHeader('Authorization', 'Bearer '+token);
             res.cookie('Authorization', token);
             res.send('Login with Facebook successed!');
-            console.log("註冊過了");
             }
           });
         });
@@ -332,9 +333,8 @@ app.post('/upload_user_pic',upload.single('upload_pic'), function(req, res) {
 
 
 function check_mail(mail){
-  //Regular expression Testing
+  //Regular expression
   let emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
-  
   //validate ok or not
   if(mail.search(emailRule)!= -1){
     return true;
