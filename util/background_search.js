@@ -9,7 +9,7 @@ charset(superagent);
 const cheerio = require('cheerio');
 const schedule = require('node-schedule');
 const Nightmare = require('nightmare');
-const nightmare = Nightmare({ show: true, waitTimeout: 6000 });
+const nightmare = Nightmare({ show: false, waitTimeout: 6000 });
 const vo = require('vo');
 
 
@@ -161,7 +161,7 @@ function kaboompics_background_search(type,page){
         });
 
         for(let i=0;i<image_url.length;i++){
-            let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
+            let image_id = i+crypto.randomBytes(32).toString('hex').substr(0,8);
             let provider = "kaboompics"
             let insert_image_data = [image_source_url[i].image_source_url,image_url[i].image_url,provider,type,image_id];
             img_insert_data.push(insert_image_data);
@@ -203,7 +203,7 @@ function pexels_background_search(type){
     vo(run)(function(err,data) {
         if(data.image_url){
             for(let i=0;i<data.image_url.length;i++){         
-                let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
+                let image_id = i+crypto.randomBytes(32).toString('hex').substr(0,8);
                 let provider = "pexels"       
                 let insert_image_data = [data.image_source_url[i],data.image_url[i],provider,type,image_id];
                 image_insert_data.push(insert_image_data);
@@ -252,7 +252,7 @@ function pixabay_background_search(type,page) {
                 }
             });
             for(let i=0;i<image_url.length;i++){
-                let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
+                let image_id = i+crypto.randomBytes(32).toString('hex').substr(0,8);
                 let provider = "pixabay"       
                 let insert_image_data = [image_source_url[i].image_source_url,image_url[i].image_url,provider,type,image_id];
                 image_data.push(insert_image_data);
