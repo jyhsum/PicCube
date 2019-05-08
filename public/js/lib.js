@@ -1,5 +1,4 @@
-
-  //離開這個頁面時將localstroage內喜愛的圖片編號存到資料庫 & 將破圖id傳到後端再從資料庫刪掉
+//離開這個頁面時將localstroage內喜愛的圖片編號存到資料庫 & 將破圖id傳到後端再從資料庫刪掉
 window.onbeforeunload = function(){ 
     let item = localStorage.getItem('like_item');
     if(item){
@@ -46,19 +45,17 @@ window.onbeforeunload = function(){
 
   
 function error_pic(image_id){
+    console.log(image_id);
     //把破圖的 img 跟 button 都隱藏
     let broken_image_button = document.getElementsByClassName(image_id)[0];
     broken_image_button.style.display = "none";
     let broken_image = document.querySelector("img[alt='"+image_id+"']");
     broken_image.style.display = "none";
-  
     //把破圖的id 存到local storage
     let storageArray = JSON.parse(localStorage.getItem('broken_image')) || [];
     storageArray.push({image_id:image_id, note:"broken_image_id"});
     localStorage.setItem('broken_image',JSON.stringify(storageArray));
-  
-  
-   }
+}
 
 
 
@@ -109,18 +106,17 @@ function error_pic(image_id){
       let token = getCookie("Authorization");
       if(token){
         check_user_name().then(function(result){
-          if(result.like_image_info!="NULL"){
+          console.log(result);
+          if(result.user_name!="NULL"){
             document.getElementById("profile_button").innerText = result.user_name;
             document.getElementById("sign_in_button").style.display = "none";
             document.getElementById("sign_up_button").style.display = "none";
-            //show_like_status(result.like_image_info);
             return mainResolve(result.like_image_info);
           }
-          else{
-            document.getElementById("profile_button").innerText = result.user_name;
-            document.getElementById("sign_in_button").style.display = "none";
-            document.getElementById("sign_up_button").style.display = "none";
-            return mainResolve(result.like_image_info);
+          else{ //token錯誤或逾期
+            document.getElementById("profile_button").style.display = "none";
+            document.getElementById("log_out_button").style.display = "none";
+            return mainResolve();
           }    
         });
       }

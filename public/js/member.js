@@ -10,7 +10,6 @@ window.onload = function(){
       if (r.readyState != 4 || r.status != 200) return;
         let status = JSON.parse(r.responseText).status;
         if(status == 200){
-          //console.log(r.responseText);
           create_image(r.responseText,"user_pic");
           change_display_name(JSON.parse(r.responseText).user_name);
           insert_total_likes(JSON.parse(r.responseText).total_likes);
@@ -61,58 +60,12 @@ function check_file_size(file){
 
 
 
-
-//離開這個頁面時將localstroage內取消喜愛的圖片編號存到資料庫
-// window.onbeforeunload = function(){
-//   let item = localStorage.getItem('like_item');
-//   let token = getCookie("Authorization");
-//   if(check_user_name() && (item)){  //如果token還沒過期以及localstroage有資料
-//     let xhttp = new XMLHttpRequest();
-//     xhttp.open("POST", "/edit_like_image", true);
-//     xhttp.onload = function() {
-//       if (this.readyState == 4 && this.status == 200) {
-//         console.log(this.responseText);
-
-//       }
-//     };
-//     xhttp.onerror = function() { reject("Error") };;
-//     xhttp.setRequestHeader("Content-Type", "application/json");
-//     xhttp.setRequestHeader("Authorization", "Bearer "+token);
-//     xhttp.send(item);
-//   }
-//   else{ //token 過期了 請user重新登入
-//     window.alert("Please Sign in to continue your change.");
-//   }
-
-
-//   let broken_id_list = localStorage.getItem('broken_image');
-//   if(broken_id_list){
-//     let xhttp = new XMLHttpRequest();
-//     xhttp.open("POST", "/delete_broken_image", true);
-//     xhttp.onload = function() {
-//       if (this.readyState == 4 && this.status == 200) {
-//         console.log(this.responseText);
-//       }
-//     };
-//     xhttp.onerror = function() { reject("Error") };;
-//     xhttp.setRequestHeader("Content-Type", "application/json");
-//     xhttp.send(JSON.stringify({broken_id:broken_id_list}));
-
-//   }
-
-
-// };
-
-
-
-
-
 //fetch 將檔案傳到後端
 function sent_file(file){
   let token = getCookie("Authorization");
   let form = new FormData();
   form.append("upload_pic", file);
-  fetch('/upload_user_pic', {
+  fetch('/member/upload_user_pic', {
     method: 'POST',
     body: form,
     headers: new Headers({
@@ -134,26 +87,7 @@ function showPreviewImage(fileObj) {
 }
 
 
-
-
-
-
-
-
-//Get token from cookie
-// function getCookie(cname){
-//   let name = cname + "=";
-//   let ca = document.cookie.split(';');
-//   for(let i=0; i<ca.length; i++) {
-//     let c = ca[i].trim();
-//     if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-//   }
-//   return "";
-// }
-
-
-
- function create_image (data) {
+function create_image (data) {
     let image_data = JSON.parse(data);
     let total_count = image_data.like_image_info.length;
     if(image_data.like_image_info!='NULL'){
@@ -184,7 +118,7 @@ function showPreviewImage(fileObj) {
 
 
 
- function addElementDiv(obj,imageinfo,column_order) {
+function addElementDiv(obj,imageinfo,column_order) {
   let parent = document.getElementsByClassName(obj);
   let div = document.createElement("div");
   div.setAttribute("class", "pic_column");
@@ -228,16 +162,6 @@ function insert_profile_pic(url){
   }
 }
 
-
-
-// function logout(){
-//     let keys = document.cookie.match(/[^ =;]+(?=\=)/g);
-//       if(keys) {
-//         for(var i = keys.length; i--;)
-//         document.cookie = keys[i] + '=0;expires=' + new Date(0).toUTCString();
-//         window.location="/";
-//       }
-//   }
 
 
 
@@ -303,46 +227,3 @@ function get_id_list(data){
   }
   return id_array
 }
-
-
-
-// function show_like_status(data){
-//   for(let i=0;i<data.length;i++){
-//     let button = document.getElementsByClassName(data[i].image_id)[0];
-//     if(button){
-//       button.classList.replace("unclicked","clicked");
-//     }
-//   }
-
-//  };
-
-//  function check_user_name(){
-//   return new Promise((mainResolve, mainReject) => {
-//     let token = getCookie("Authorization");
-//     if(token){
-//       let r = new XMLHttpRequest();
-//       r.open("POST", "/member", true);
-//       r.onreadystatechange = function () {
-//       if (r.readyState != 4 || r.status != 200) return;
-//       let status = JSON.parse(r.responseText).status;
-//       let user_name = JSON.parse(r.responseText).user_name;
-//       let like_image_info = JSON.parse(r.responseText).like_image_info;
-//       if(status == 200){
-//         return mainResolve({user_name:user_name , like_image_info:like_image_info});
-//       }
-//       else if(r.responseText == 403){
-
-//         console.log(r.responseText);
-//         delete_cookies(); //刪除cookies
-//       }
-//       else{
-//         console.log(r.responseText);
-//         delete_cookies(); //刪除cookies
-//       }
-//     };
-//       r.setRequestHeader("Authorization", "Bearer "+token);
-//       r.setRequestHeader("Content-Type", "application/json");
-//       r.send();
-//     }
-//   });
-//  }

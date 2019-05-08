@@ -1,11 +1,7 @@
 const express = require('express')
 const app = express.Router();
 const mysql = require("../util/mysqlcon.js");
-const search = require("../util/search_functions.js");
 const first_search = require("../util/first_search.js");
-
-
-
 const {Translate} = require('@google-cloud/translate');
 const projectId = 'jyhsum';
 const translate = new Translate({
@@ -21,8 +17,6 @@ function translate_keyword(keyword){
       .translate(text, target)
       .then(results => {
         const translation = results[0];
-        // console.log(`Text: ${text}`);
-       // console.log(`Translation: ${translation}`);
         return mainResolve (translation);
       })
       .catch(err => {
@@ -47,15 +41,29 @@ app.get('/:keyword', function(req, res) {
   else{
     if (escape(search_keyword).indexOf("%u") !=-1){
       translate_keyword(search_keyword).then(function(translate_result){
-        console.log("translate_result:"+translate_result);
-        start_search(paging,translate_result,search_keyword).then(function(search_result){
-          res.send(search_result);
+        start_search(paging,translate_result.toLowerCase(),search_keyword).then(function(search_result){
+          similar_keyword(translate_result.toLowerCase()).then((result)=>{
+            if(result.similar_result){
+              res.send({search_result:search_result,similar_result:result.similar_result});
+            }
+            else{
+              res.send({search_result:search_result});
+            }
+          });
+          
         });
       });
     }
     else{
       start_search(paging,search_keyword,search_keyword).then(function(search_result){
-        res.send(search_result);
+        similar_keyword(search_keyword).then((result)=>{
+          if(result.similar_result){
+            res.send({search_result:search_result,similar_result:result.similar_result});
+          }
+          else{
+            res.send({search_result:search_result});
+          }
+        });
       });
     }
   }
@@ -63,23 +71,13 @@ app.get('/:keyword', function(req, res) {
 });
 
 
-app.post('/search/similar_word', function(req, res){
-  let search_keyword = req.body.search_keyword;
-  similar_keyword(search_keyword).then((result)=>{
-    console.log(result);
-    if(result.similar_result){
-      res.send({similar_result:result.similar_result});
-    }
-  });
-});
-
 function check_validStr(str){
-  let validStr = new Array("<",">",".","!","\/","\\"); //列出所有被禁止的方法字元
-  for (let i=0;i<validStr.length;i++){ //依序載入使用者輸入的每個字元
+  let validStr = new Array("<",">",".","!","\/","\\");
+  for (let i=0;i<validStr.length;i++){ 
     for (let j=0;j<str.length;j++){
       ch=str.substr(j,1);
-      if (ch==validStr[i]){ //如果包含禁止字元
-        return true; //如果有特殊字源回傳true
+      if (ch==validStr[i]){ 
+        return true; //如果包含禁止字元回傳true
       }
     } 
   } 
@@ -95,20 +93,18 @@ function start_search(paging,search_keyword,origin_keyword){
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * FROM `image_data` WHERE `tag` LIKE "'+search_keyword+'";',function(error, results, fields){
+      connection.query('SELECT * FROM `image_data` WHERE `tag` = "'+search_keyword+'" ORDER BY `provider` ASC;',function(error, results, fields){
         connection.release();
         if(error){
           console.log(error);
           return mainReject({error:"Query image_data Error"});
         }
         else{
-          let similar_result;
           let total = results.length;
           let total_page = Math.ceil(total/15);
           let lastPageCount = total%15;
 
           if(results.length>1){
-
               if (paging > total_page-1){
                 return mainResolve({"error": "Invalid token."});
               }
@@ -147,7 +143,7 @@ function start_search(paging,search_keyword,origin_keyword){
             //If keyword is not in database, add new pic
             else{          
               console.log("key word is not in DB");
-              first_search.isChinese(search_keyword)
+              first_search.is_chinese(search_keyword)
               .then((first_search_result)=>{
                 let output = first_search_result.data;
                 similar_keyword(search_keyword).then((result)=>{
@@ -185,15 +181,14 @@ function similar_keyword(search_keyword){
           let similar_words = [];
           if(similar_result.length>0){
             for(let i=0;i<similar_result.length;i++){
-              if(similar_result[i].tag_name != search_keyword){
-                console.log(similar_result[i].tag_name);
+              if(similar_result[i].tag_name.toLowerCase() !== search_keyword.toLowerCase()){
                 similar_words.push(similar_result[i].tag_name);
               }   
             }
             return mainResolve({similar_result:similar_words});
           }
           else{
-            return mainResolve({similar_result:null});
+            return mainResolve({similar_result:null});;
           }
         }
       });

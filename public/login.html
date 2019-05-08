@@ -36,7 +36,7 @@
         <p>or</p>
       </div>
 
-      <form action="/signup" accept-charset="UTF-8" method="post">
+      <form action="/member/signup" accept-charset="UTF-8" method="post">
       
         <div class="form-group">
           <div class="input_email">
@@ -73,7 +73,7 @@
       <div class="form-separator">
         <p>or</p>
       </div>
-      <form action="/signin" accept-charset="UTF-8" method="post">
+      <form action="/member/signin" accept-charset="UTF-8" method="post">
 
         <div class="form-group">
           <div class="input_email">
@@ -120,7 +120,7 @@
         else{
 
           let xhr=new XMLHttpRequest();
-          let url = "/fb_signin";
+          let url = "/member/fb_signin";
           xhr.open("POST", url, true);
           xhr.onreadystatechange = function(){
             if(xhr.readyState===4){

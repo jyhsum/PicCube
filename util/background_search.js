@@ -52,8 +52,8 @@ let unsplash_background_counter = (type,start_page,end_page)=>{
 
 
 let pixabay_background_counter = (type,start_page,end_page)=>{
-    if(end_page>150){
-        end_page = 150;
+    if(end_page>50){
+        end_page = 50;
     }
     let i=start_page;
     let rule = new schedule.RecurrenceRule();
@@ -90,7 +90,7 @@ let kaboompics_background_counter = (type) => {
               return;
         }
         let $ = cheerio.load(sres.text);
-        //先抓取最後一頁的頁碼
+        //Catch total pages first.
         let last_page_div = $('div#top.page div.pagination span.last a').attr('href');
         if(last_page_div){
             let end_page = last_page_div.split("=")[2];
@@ -105,16 +105,15 @@ let kaboompics_background_counter = (type) => {
                 i+=1;
             });       
         }
-        else{ //只有一頁或是找不到資料
+        else{
             let image_url = [];
             let image_source_url = [];
             let img_insert_data = [];
-            if(!$('div.work-img img').attr('data-original')){
+            if(!$('div.work-img img').attr('data-original')){ //If there is not any reault.
                 console.log("kaboompics找不到圖片");
                 return ({status:200,provider:"kaboompics",data:""}); 
             }
-            else{ //把第一頁的data新增到資料庫
-                console.log("kaboompics只有一頁")
+            else{ //Insert first page's data into DB.
                 $('div.work-img a img.lazy').each(function(idx, element) {          
                     let $element = $(element);
                     image_url.push({image_url:"https://kaboompics.com"+$element.attr('data-original')});
@@ -122,8 +121,7 @@ let kaboompics_background_counter = (type) => {
                 $('div.work-img a').each(function(idx, element) {         
                     let $element = $(element); 
                     image_source_url.push({image_source_url:$element.attr('href')});
-                });
-            
+                });            
                 for(let i=0;i<image_url.length;i++){
                     let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
                     let provider = "kaboompics"
@@ -131,13 +129,13 @@ let kaboompics_background_counter = (type) => {
                     img_insert_data.push(insert_image_data);
                 }
                 insert_data(img_insert_data);                
-
             }
         }
     });
 }
 
-//page從第一頁開始
+
+//paging of kaboompics starts from 1
 function kaboompics_background_search(type,page){
     let baseUrl = 'https://kaboompics.com/gallery?search='+type+'&page='+page;
     let image_url = [];
@@ -173,52 +171,51 @@ function kaboompics_background_search(type,page){
 
 };
 
-function pexels_background_search(type,start){
+function pexels_background_search(type){
     let image_insert_data=[];
     var run = function * () {
         yield nightmare.goto('https://www.pexels.com/search/'+type);
         yield nightmare.viewport(1024, 768);
         var previousHeight, currentHeight=0;
         while(previousHeight !== currentHeight) {
-        previousHeight = currentHeight;
-        var currentHeight = yield nightmare.evaluate(function() {
-            return document.body.scrollHeight;
-        });
-        yield nightmare.scrollTo(currentHeight, 0)
-        .wait(1000);
+            previousHeight = currentHeight;
+            var currentHeight = yield nightmare.evaluate(function() {
+                return document.body.scrollHeight;
+            });
+            yield nightmare.scrollTo(currentHeight, 0)
+            .wait(2000);
         }
         var urls = yield nightmare.evaluate(function() {
-        let image_url =[];
-        let image_source_url =[];
-        document.querySelectorAll('.photo-item__img').forEach((el,index)=>{
-            image_url.push(el.src);
-        });
-
-        document.querySelectorAll('.js-photo-link.photo-item__link').forEach((el,index)=>{
-            image_source_url.push(el.href);
-        });
-        return ({image_url:image_url,image_source_url:image_source_url});
+            let image_url =[];
+            let image_source_url =[];
+            document.querySelectorAll('.photo-item__img').forEach((el,index)=>{
+                image_url.push(el.src);
+            });
+            document.querySelectorAll('.js-photo-link.photo-item__link').forEach((el,index)=>{
+                image_source_url.push(el.href);
+            });
+            return ({image_url:image_url,image_source_url:image_source_url});
         });
         yield nightmare.end();
         return urls;
     };
     
     vo(run)(function(err,data) {
-        if(data.image_source_url.length>30){
-            for(let i=start;i<data.image_source_url.length;i++){         
+        if(data.image_url){
+            for(let i=0;i<data.image_url.length;i++){         
                 let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
                 let provider = "pexels"       
                 let insert_image_data = [data.image_source_url[i],data.image_url[i],provider,type,image_id];
                 image_insert_data.push(insert_image_data);
             }
-            insert_data(image_insert_data);
+           insert_data(image_insert_data);
         }
         
     });
    
 }
 
-//取消任務
+//cancel specified job
 function schedule_cancel(schedule_name){
     schedule_name.cancel();
 }
@@ -266,35 +263,22 @@ function pixabay_background_search(type,page) {
 }
 
 function unsplash_background_search(type,page) {
-    console.log("背景搜尋");
-    console.log("搜尋關鍵字"+type);
     let image_insert_data = [];
-    let count = 0;
-    baseUrl = 'https://unsplash.com/napi/search/photos?query='+type+'&xp=&per_page=20&page='+page+''
+    baseUrl = 'https://unsplash.com/napi/search/photos?query='+type+'&xp=&per_page=20&page='+page;
     request(baseUrl, function (error, response, body) {
-        let data = JSON.parse(body);
-        let total_amount = data.results.length;
-        if (!error && response.statusCode == 200) {             
-            for(let j=0;j<total_amount;j++){                    
-                let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
-                let small_size = data.results[j].urls.small;
-                //let author_name = data.results[j].user.name;
-                //let author_website = data.results[j].user.links.html;
-                let image_source_url = data.results[j].links.html;
-                let provider = "unsplash";                           
-                let insert_image_data = [image_source_url,small_size,provider,type,image_id];
-                //let insert_author_data = [author_name,author_website,image_id];
-                image_insert_data.push(insert_image_data);
-                //author_insert_data.push(insert_author_data);
-                //img_display_data.push(display_data);     
-                // count +=1;
-                // if(count==total_amount-1){
-                    
-                // }
-                    
-            }
-            insert_data(image_insert_data);                    
-        }                                   
+        if (!error && response.statusCode == 200) {  
+            let data = JSON.parse(body);      
+            data.results.forEach(function(element) {
+                let image_id = element.id;
+                let small_size = element.urls.small;
+                let image_source_url = element.links.html;
+                let provider = "unsplash";
+                let tag = type; 
+                let insert_image_data = [image_source_url,small_size,provider,tag,image_id];
+                image_insert_data.push(insert_image_data);                   
+            }); 
+            insert_data(image_insert_data);  
+        };                                  
     });      
 };
 
