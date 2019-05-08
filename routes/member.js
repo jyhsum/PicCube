@@ -363,21 +363,21 @@ function upload_to_S3(data,filename,userId) {
       let s3 = new AWS.S3({
         params: {
             Bucket: "jyhsum",
-            Key: filename, //檔案名稱
-            ACL: 'public-read' //檔案權限
+            Key: filename,
+            ACL: 'public-read'
         }
       });
       s3.upload({
           Body: data
-      }).on('httpUploadProgress', function(evt) {   
-          //console.log(evt);//上傳進度
+      }).on('httpUploadProgress', function(evt) {
+          //evt is the upload process
       }).
-      send(function(err, data) {//上傳完畢或是碰到錯誤
+      send(function(err, data) {
         if(err){
           console.log(err);
+          return mainReject ({error:"Upload to S3 Error"});
         }
         else{
-          console.log("Upload to S3 successed!");
           let pic_url = data.Location;
           let update_user_pic = 'UPDATE user SET `user_photo` ="'+pic_url+'" WHERE `user_id`= "'+userId+'";';
           mysql.pool.getConnection(function(error, connection) {
@@ -410,7 +410,6 @@ function upload_to_S3(data,filename,userId) {
                         return mainResolve ({status:"Upload to S3 successed"});
                     }
                   });
-  
                 }
               });
             });

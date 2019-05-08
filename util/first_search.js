@@ -251,11 +251,10 @@ let unsplash = (type) =>{
         let total_data = data.total;
         let total_pages = data.total_pages;
         let end_page=total_pages;
-        if(total_data !="0"){ //搜尋的到資料的話
+        if(total_data !="0" && total_pages>1){ //if more than 2 pages
           let image_insert_data = [];
           let img_display_data = [];
           if(total_pages>20){end_page=20;}
-          //呼叫背景執行的 function
           background_search.unsplash_background_counter(search_keyword,2,end_page);
           data.results.forEach(function(element) {
             let image_id = element.id;
