@@ -146,14 +146,16 @@ app.post('/delete_broken_image', function(req, res) {
   }
   broken_list(broken_image_id).then(function(result){
     let broken_id_list = result;
-    let save_broken_id = 'INSERT INTO `broken_image` (`image_id`) VALUES (?)';
+    let save_broken_id = "INSERT INTO broken_image(`image_id`)VALUES ?";
+    let insert_id_list = broken_id_list.insert_list;
+    let delete_id_list = broken_id_list.delete_list;
     mysql.pool.getConnection(function(error, connection) {
       if(error){
         console.log(error);
         console.log({error:"Error in connection database."});
         connection.release();
       }
-      connection.query(save_broken_id, broken_id_list , function(error, save_broken_id_result, fields){
+      connection.query(save_broken_id, [insert_id_list] , function(error, save_broken_id_result, fields){
         if(error){
           console.log(error);
           console.log({error:"Insert save_broken_id Error"});
@@ -168,18 +170,20 @@ app.post('/delete_broken_image', function(req, res) {
               console.log({error:"Error in connection database."});
               connection.release();
             }
-            connection.query(delete_image_data, [broken_id_list] , function(error, delete_image_data_result, fields){
+            connection.query(delete_image_data, [delete_id_list] , function(error, delete_image_data_result, fields){
               if(error){
                 console.log(error);
                 console.log({error:"Delete image_data Error"});
                 connection.release();
               }
               else{
-                connection.query(delete_image_like, [broken_id_list] , function(error, delete_image_like_result, fields){
-                  connection.release();
+                connection.query(delete_image_like, [delete_id_list] , function(error, delete_image_like_result, fields){ 
                   if(error){
                     console.log(error);
                     console.log({error:"Delete image_like Error"});
+                    connection.release();
+                  }
+                  else{
                     connection.release();
                   }
                 });
@@ -189,8 +193,6 @@ app.post('/delete_broken_image', function(req, res) {
         }
       });
     });
-    
-
   });
 });
 
@@ -201,14 +203,15 @@ app.post('/delete_broken_image', function(req, res) {
 
 function broken_list(data){
   return new Promise((mainResolve, mainReject) => {
-    let list = [];
+    let delete_list = [];
+    let insert_list = [];
     for(let i=0;i<data.length;i++){
-      list.push(data[i].image_id);
+      delete_list.push(data[i].image_id);
+      insert_list[i]=[data[i].image_id];
     }
-    return mainResolve(list);
+    return mainResolve({delete_list:delete_list,insert_list:insert_list});
   });
 }
-
 
 
 
