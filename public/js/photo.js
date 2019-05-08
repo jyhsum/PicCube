@@ -4,6 +4,7 @@ window.onload = function(){
   let search_param = new URL(location.href).search.slice(8).replace(/\+/g, " ");
   let search_key = document.getElementsByClassName("search_key")[0];
   let decode_param = fn_decodeURI(search_param);
+  let loader = document.getElementsByClassName("lds-roller")[0];
   check_login_status().then(function(login_status_result) {
     loadDoc(decode_param).then(function(result) {
       let image_data = JSON.parse(result);
@@ -12,15 +13,17 @@ window.onload = function(){
         if(image_data.similar_result && image_data.similar_result.length>0){
           similar_keyword(image_data.similar_result);
         }
+        if(image_data.search_result.data.length<15){ //images fewer then 15 , this means there will be only 1 paging hide loader
+          loader.style.display = "none";
+        }
         get_pic_column_data(image_data).then(function(pic_column_data) {
           addElementDiv("recommand_pic",pic_column_data.image_for_column_1,0);
           addElementDiv("recommand_pic",pic_column_data.image_for_column_2,1);
           addElementDiv("recommand_pic",pic_column_data.image_for_column_3,2);
         }); 
       }
-      else{ //找不到資料
+      else{ //didn't find any images.
         search_key.innerHTML = 'Oops! "'+search_param+'" did not match any image results.</br>Please try another keyword.';
-        let loader = document.getElementsByClassName("lds-roller")[0];
         loader.style.display = "none";
       }
     }).then(()=>{
@@ -135,12 +138,10 @@ function press_like(){
   if(token){
     switch (click_status) {
       case 'clicked': //取消喜歡
-        console.log(image_id);
         //找目前localStorage有沒有已儲存的 如果有代表user在同一個頁面點喜歡又取消
         let id_list = get_id_list(storageArray); //先取出id轉成陣列
         let repest_id_index = id_list.indexOf(image_id); //找出重複id的index值
         if(repest_id_index ==-1){  //代表不是在同一個頁面點喜歡又取消
-          console.log("-1");
           storageArray.push({image_id:image_id, action:"cancel_like"});
           localStorage.setItem('like_item',JSON.stringify(storageArray));
         }
@@ -199,7 +200,6 @@ window.addEventListener('scroll', function(e) {
   if (last_known_scroll_position+pic_column_height>document.body.clientHeight) {
     nextpage+=0.5;
     if(nextpage%1==0){
-      console.log(nextpage);
       read_new_pic(nextpage)
       .then(function(result) {
         let image_data = JSON.parse(result);
@@ -211,7 +211,7 @@ window.addEventListener('scroll', function(e) {
             addImgDiv("pic_column",pic_column_data.image_for_column_3,2);
           });       
         }
-        else{
+        else{ //last page
           loader.style.display = "none"; 
         }
       })
