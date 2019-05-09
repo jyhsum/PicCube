@@ -76,7 +76,7 @@ app.post('/signin', function(req, res) {
   console.log(req.body);
   let email = req.body.email;
   let password = req.body.password;
-  if(check_mail(email)){
+  //if(check_mail(email)){
     let query_user_data = "SELECT * FROM user WHERE `email`='"+email+"';"
     mysql.pool.getConnection(function(error, connection) {
       if(error){
@@ -111,10 +111,10 @@ app.post('/signin', function(req, res) {
         }
       });
     });
-  }
-  else{
-    res.send('信箱格式錯誤！');
-  }
+ // }
+  // else{
+  //   res.send('信箱格式錯誤！');
+  // }
 });
   
 app.post('/fb_signin', function(req, res) {
