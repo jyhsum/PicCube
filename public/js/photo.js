@@ -192,27 +192,32 @@ function read_new_pic(nextpage) {
 
 }
 
-let nextpage = 1;
+
+let page = 1;
+let read_data_flag= true;
 window.addEventListener('scroll', function(e) {
   let last_known_scroll_position = window.scrollY;
   let pic_column_height = document.getElementsByClassName("pic_column")[0].clientHeight;
   let loader = document.getElementsByClassName("lds-roller")[0];
   if (last_known_scroll_position+pic_column_height>document.body.clientHeight) {
-    nextpage+=0.5;
-    if(nextpage%1==0){
-      read_new_pic(nextpage)
+    if(page%1==0 && read_data_flag==true){
+      read_data_flag = false;
+      read_new_pic(page)
       .then(function(result) {
         let image_data = JSON.parse(result);
-        let total_page = image_data.search_result.total_page;
-        if(total_page){
+        let next_page = image_data.search_result.paging;
+        if(next_page){
           get_pic_column_data(image_data).then(function(pic_column_data) {
             addImgDiv("pic_column",pic_column_data.image_for_column_1,0);
             addImgDiv("pic_column",pic_column_data.image_for_column_2,1);
             addImgDiv("pic_column",pic_column_data.image_for_column_3,2);
+            page = next_page;
+            read_data_flag = true;
           });       
         }
         else{ //last page
           loader.style.display = "none"; 
+          read_data_flag = false;
         }
       })
       .then(function(){
@@ -223,7 +228,5 @@ window.addEventListener('scroll', function(e) {
         });
       });
     }  
-
   }
-
 });
