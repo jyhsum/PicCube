@@ -76,7 +76,7 @@ app.post('/signin', function(req, res) {
   console.log(req.body);
   let email = req.body.email;
   let password = req.body.password;
-  //if(check_mail(email)){
+  if(check_mail(email)){
     let query_user_data = "SELECT * FROM user WHERE `email`='"+email+"';"
     mysql.pool.getConnection(function(error, connection) {
       if(error){
@@ -103,18 +103,18 @@ app.post('/signin', function(req, res) {
               res.redirect('/');
             }
             else{
-              res.send('密碼錯誤！');
+              res.send('Wrong password!');
             }
         }
         else{
-          res.send('此信箱尚未註冊！');
+          res.send('This email is not registered yet！');
         }
       });
     });
- // }
-  // else{
-  //   res.send('信箱格式錯誤！');
-  // }
+ }
+  else{
+    res.send('Email format error!');
+  }
 });
   
 app.post('/fb_signin', function(req, res) {
