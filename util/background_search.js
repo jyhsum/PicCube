@@ -201,7 +201,7 @@ function pexels_background_search(type){
     };
     
     vo(run)(function(err,data) {
-        if(data.image_url){
+        if(data.image_url.length>0){
             for(let i=0;i<data.image_url.length;i++){         
                 let image_id = i+crypto.randomBytes(32).toString('hex').substr(0,8);
                 let provider = "pexels"       
