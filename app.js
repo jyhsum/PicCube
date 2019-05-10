@@ -18,7 +18,7 @@ app.use(express.static('public'));
 
 
 app.get('/hot_image', function(req, res) {
-  let query_hot = 'SELECT * , count(A.`image_id`) AS likes FROM `image_like` AS A INNER JOIN `image_data` AS B ON A.`image_id` = B.`image_id` GROUP BY A.`image_id` ORDER BY likes DESC limit 30;';
+  let query_hot = 'SELECT * , count(A.`image_id`) AS likes FROM `image_like` AS A INNER JOIN `image_data` AS B ON A.`image_id` = B.`image_id` GROUP BY A.`image_id` ORDER BY likes DESC limit 10;';
   mysql.pool.getConnection(function(error, connection) {
     console.log('route:hot_image ,connected as id ' + connection.threadId);
     if(error){

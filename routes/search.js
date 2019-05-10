@@ -30,23 +30,23 @@ function translate_keyword(keyword){
 app.get('/:keyword', function(req, res) {
   //一開始就先檢查是不是有跳脫字元   
   let paging=parseInt(req.query.paging);
-  if(!paging){
+  if (!paging) {
     paging = 0;
   }
 
   let search_keyword = req.params.keyword;
-  if (check_validStr(search_keyword)){
+  if (check_validStr(search_keyword)) {
     res.send({status:404, data:""});
   }
-  else{
-    if (escape(search_keyword).indexOf("%u") !=-1){
+  else {
+    if (escape(search_keyword).indexOf("%u") !=-1) {
       translate_keyword(search_keyword).then(function(translate_result){
-        start_search(paging,translate_result.toLowerCase(),search_keyword).then(function(search_result){
+        start_search(paging,translate_result.toLowerCase(),search_keyword).then(function(search_result) {
           similar_keyword(translate_result.toLowerCase()).then((result)=>{
-            if(result.similar_result){
+            if (result.similar_result) {
               res.send({search_result:search_result,similar_result:result.similar_result});
             }
-            else{
+            else {
               res.send({search_result:search_result});
             }
           });
@@ -54,13 +54,13 @@ app.get('/:keyword', function(req, res) {
         });
       });
     }
-    else{
-      start_search(paging,search_keyword,search_keyword).then(function(search_result){
+    else {
+      start_search(paging,search_keyword,search_keyword).then(function(search_result) {
         similar_keyword(search_keyword).then((result)=>{
-          if(result.similar_result){
+          if (result.similar_result) {
             res.send({search_result:search_result,similar_result:result.similar_result});
           }
-          else{
+          else {
             res.send({search_result:search_result});
           }
         });
@@ -71,12 +71,12 @@ app.get('/:keyword', function(req, res) {
 });
 
 
-function check_validStr(str){
+function check_validStr(str) {
   let validStr = new Array("<",">",".","!","\/","\\");
-  for (let i=0;i<validStr.length;i++){ 
-    for (let j=0;j<str.length;j++){
+  for (let i=0;i<validStr.length;i++) { 
+    for (let j=0;j<str.length;j++) {
       ch=str.substr(j,1);
-      if (ch==validStr[i]){ 
+      if (ch==validStr[i]) { 
         return true; //如果包含禁止字元回傳true
       }
     } 
@@ -85,7 +85,7 @@ function check_validStr(str){
 
 
 
-function start_search(paging,search_keyword,origin_keyword){
+function start_search(paging,search_keyword,origin_keyword) {
   return new Promise((mainResolve, mainReject) => {
     //Search keyword in database first
     mysql.pool.getConnection(function(error, connection) {
@@ -101,8 +101,8 @@ function start_search(paging,search_keyword,origin_keyword){
         }
         else{
           let total = results.length;
-          let total_page = Math.ceil(total/15);
-          let lastPageCount = total%15;
+          let total_page = Math.ceil(total/10);
+          let lastPageCount = total%10;
 
           if(results.length>1){
               if (paging > total_page-1){
@@ -110,8 +110,8 @@ function start_search(paging,search_keyword,origin_keyword){
               }
               else if(paging==total_page-1){
                 let display_data = [];
-                let data_start = paging*15;
-                let data_end = paging*15+lastPageCount-1;                   
+                let data_start = paging*10;
+                let data_end = paging*10+lastPageCount-1;                   
                 for(let i =data_start;i<=data_end;i++){
                   display_data.push(results[i]);
                 }
@@ -125,8 +125,8 @@ function start_search(paging,search_keyword,origin_keyword){
               }
               else{
                 let display_data = [];
-                let data_start = paging*15;
-                let data_end = paging*15+14;
+                let data_start = paging*10;
+                let data_end = paging*10+9;
                 for(let i =data_start;i<=data_end;i++){
                   display_data.push(results[i]);
               }    
