@@ -188,80 +188,74 @@ app.post('/fb_signin', function(req, res) {
 });
   
 app.post('/', function(req, res) {
-  
-    const time = Math.floor(Date.now() / 1000);
-    
-    //判斷token是否正確
-      let token = req.headers.authorization.slice(7);  
-      jwt.verify(token, secret, function (err, decoded) {
-        if (err) {
-          // wrong password
-          tokenResult = false;
-          res.send({status:403,note:"Wrong token."});
-        } 
-        else if (decoded.exp <= time) {
-          //token expired
-          tokenResult = false;
-          res.send({status:408,note:"Session expired."});
-        } else{
-          tokenResult = decoded.data;
-          let like_image_data =[];
-          
-          let query = 'SELECT * from `image_data` AS A RIGHT JOIN `image_like` AS B ON A.`image_id` = B.`image_id` INNER JOIN `user` AS D on D.`email`= B.`email` WHERE D.`email` = "'+tokenResult+'";'
-          //'SELECT * from image_data AS A INNER JOIN image_author AS C ON A.`image_id` = C.`image_id` RIGHT JOIN `image_like` AS B ON A.`image_id` = B.`image_id` where B.`email`="'+tokenResult+'";'
-          
-          mysql.pool.getConnection(function(error, connection) {
-            if(error){
-              console.log(error);
-              res.send({error:"Error in connection database."});
-            }    
-            connection.query(query, function(error, result, fields){
-              connection.release();
+  const time = Math.floor(Date.now() / 1000);
+  //判斷token是否正確
+  let token = req.headers.authorization.slice(7);  
+  jwt.verify(token, secret, function (err, decoded) {
+    if (err) {
+      // wrong password
+      tokenResult = false;
+      res.send({status:403,note:"Wrong token."});
+    } 
+    else if (decoded.exp <= time) {
+      //token expired
+      tokenResult = false;
+      res.send({status:408,note:"Session expired."});
+    } else{
+      tokenResult = decoded.data;
+      let like_image_data =[];    
+      let query = 'SELECT * from `image_data` AS A RIGHT JOIN `image_like` AS B ON A.`image_id` = B.`image_id` INNER JOIN `user` AS D on D.`email`= B.`email` WHERE D.`email` = "'+tokenResult+'";' 
+      mysql.pool.getConnection(function(error, connection) {
+        if(error){
+          console.log(error);
+          res.send({error:"Error in connection database."});
+        }    
+        connection.query(query, function(error, result, fields){
+          connection.release();
+          if(error){
+            console.log({error:"Add user_data Error"});
+            connection.rollback(function() {
+              throw error;
+            });
+          }
+          else if(result.length == 0){ //沒有按下喜歡的圖片就丟 user 所有資訊
+            console.log(tokenResult);
+            let user_query = 'SELECT * from `user` WHERE `email`="'+tokenResult+'"'
+            connection.query(user_query, function(error, result, fields){      
               if(error){
-              console.log({error:"Add user_data Error"});
-              connection.rollback(function() {
-                throw error;
-              });
-              }
-              else if(result.length == 0){ //沒有按下喜歡的圖片就丟 user 所有資訊
-                console.log(tokenResult);
-                let user_query = 'SELECT * from `user` WHERE `email`="'+tokenResult+'"'
-                connection.query(user_query, function(error, result, fields){
-                  
-                  if(error){
-                    console.log({error:"Select user_data Error"});
-                    connection.rollback(function() {
-                      throw error;
-                    });
-                  }
-                  else{
-                    let user_name = result[0].name;
-                    let email = result[0].email;
-                    let user_profile_pic = result[0].user_photo;
-                    res.send({status:200, user_name:user_name,user_email:email,user_pic:user_profile_pic||"null",like_image_info:"NULL"});
-                    }
+                console.log({error:"Select user_data Error"});
+                connection.rollback(function() {
+                  throw error;
                 });
               }
               else{
-                for(let i=0;i<result.length;i++){
-                  like_image_data.push({
-                    image_id:result[i].image_id,
-                    image_url:result[i].image_url,
-                    image_source_url:result[i].image_source_url,
-                    image_like : result[i].likes,
-                    auther_name:result[i].auther_name||'null',
-                    auther_website:result[i].auther_website||'null',
-                  });
-                }
                 let user_name = result[0].name;
                 let email = result[0].email;
                 let user_profile_pic = result[0].user_photo;
-                res.send({status:200, user_name:user_name,user_email:email,user_pic:user_profile_pic||"null",total_likes:result.length, like_image_info:like_image_data});
+                res.send({status:200, user_name:user_name,user_email:email,user_pic:user_profile_pic||"null",like_image_info:"NULL"});
               }
             });
-          });
-        }
+          }
+          else{
+            for(let i=0;i<result.length;i++){
+              like_image_data.push({
+                image_id:result[i].image_id,
+                image_url:result[i].image_url,
+                image_source_url:result[i].image_source_url,
+                image_like : result[i].likes,
+                auther_name:result[i].auther_name||'null',
+                auther_website:result[i].auther_website||'null',
+               });
+            }
+            let user_name = result[0].name;
+            let email = result[0].email;
+            let user_profile_pic = result[0].user_photo;
+            res.send({status:200, user_name:user_name,user_email:email,user_pic:user_profile_pic||"null",total_likes:result.length, like_image_info:like_image_data});
+          }
+        });
       });
+    }
+  });
 });
   
 app.post('/upload_user_pic',upload.single('upload_pic'), function(req, res) {

@@ -28,12 +28,10 @@ function translate_keyword(keyword){
 
 //輸入框打完字後按下Go開始搜尋圖片並把 API 給前端
 app.get('/:keyword', function(req, res) {
-  //一開始就先檢查是不是有跳脫字元   
   let paging=parseInt(req.query.paging);
   if (!paging) {
     paging = 0;
   }
-
   let search_keyword = req.params.keyword;
   if (check_validStr(search_keyword)) {
     res.send({status:404, data:""});
@@ -93,7 +91,7 @@ function start_search(paging,search_keyword,origin_keyword) {
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * FROM `image_data` WHERE `tag` = "'+search_keyword+'" ORDER BY `provider` ASC;',function(error, results, fields){
+      connection.query('SELECT * FROM `image_data` WHERE `tag` = "'+search_keyword+'";',function(error, results, fields){
         connection.release();
         if(error){
           console.log(error);
@@ -103,7 +101,6 @@ function start_search(paging,search_keyword,origin_keyword) {
           let total = results.length;
           let total_page = Math.ceil(total/10);
           let lastPageCount = total%10;
-
           if(results.length>1){
               if (paging > total_page-1){
                 return mainResolve({"error": "Invalid token."});

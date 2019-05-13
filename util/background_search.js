@@ -2,7 +2,6 @@
 const request = require('request');
 const crypto = require('crypto');
 const mysql = require('./mysqlcon.js');
-const nightmareHelper = require("nightmare-helper");
 const superagent = require('superagent');
 const charset = require('superagent-charset');
 charset(superagent);
@@ -14,19 +13,9 @@ const vo = require('vo');
 
 
 
-//定時任務範例
-function scheduleCronstyle(){
-    console.log("schedule1");
-    schedule.scheduleJob('1-10 * * * * *', function(){
-      console.log("schedule2");
-        console.log('scheduleCronstyle:' + new Date());
-    }); 
-};
 
 
-
-
-let unsplash_background_counter = (type,start_page,end_page)=>{
+let unsplash_background_counter = (type,start_page,end_page) => {
     if(end_page>100){
         end_page = 100;
     }
@@ -310,7 +299,7 @@ function insert_data(image_insert_data){
                             connection.release(); 
                             console.log({error:"Database Query Error"});
                             return mysql.con.rollback(function(){
-                            throw error;
+                                throw error;
                             });
                         }
                         else{
