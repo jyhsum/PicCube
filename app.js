@@ -95,7 +95,7 @@ app.post('/delete_broken_image', function(req, _res) {
     const delete_id_list = broken_id_list.delete_list;
     dao.broken_image.save_broken_id(insert_id_list).then(function() {
       dao.broken_image.delete_broken_image(delete_id_list).then(function() {
-        dao.broken_image.delete_image_like(delete_id_list).then(function() {
+        dao.broken_image.delete_image_like(insert_id_list).then(function() {
 
         }).catch(function(error){
             console.log({error:error});

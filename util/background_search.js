@@ -8,12 +8,8 @@ charset(superagent);
 const cheerio = require('cheerio');
 const schedule = require('node-schedule');
 const Nightmare = require('nightmare');
-const nightmare = Nightmare({ show: false, waitTimeout: 6000 });
+const nightmare_pexel = Nightmare({ show: false, waitTimeout: 6000});
 const vo = require('vo');
-
-
-
-
 
 let unsplash_background_counter = (type,start_page,end_page) => {
     if(end_page>100){
@@ -39,7 +35,6 @@ let unsplash_background_counter = (type,start_page,end_page) => {
     });
 };
 
-
 let pixabay_background_counter = (type,start_page,end_page)=>{
     if(end_page>50){
         end_page = 50;
@@ -64,7 +59,6 @@ let pixabay_background_counter = (type,start_page,end_page)=>{
         i+=1;
     });
 };
-
 
 let kaboompics_background_counter = (type) => {
     console.log("kaboompics_background_counter");
@@ -123,7 +117,6 @@ let kaboompics_background_counter = (type) => {
     });
 }
 
-
 //paging of kaboompics starts from 1
 function kaboompics_background_search(type,page){
     let baseUrl = 'https://kaboompics.com/gallery?search='+type+'&page='+page;
@@ -163,18 +156,18 @@ function kaboompics_background_search(type,page){
 function pexels_background_search(type){
     let image_insert_data=[];
     var run = function * () {
-        yield nightmare.goto('https://www.pexels.com/search/'+type);
-        yield nightmare.viewport(1024, 768);
+        yield nightmare_pexel.goto('https://www.pexels.com/search/'+type);
+        yield nightmare_pexel.viewport(1024, 768);
         var previousHeight, currentHeight=0;
         while(previousHeight !== currentHeight) {
             previousHeight = currentHeight;
-            var currentHeight = yield nightmare.evaluate(function() {
+            var currentHeight = yield nightmare_pexel.evaluate(function() {
                 return document.body.scrollHeight;
             });
-            yield nightmare.scrollTo(currentHeight, 0)
+            yield nightmare_pexel.scrollTo(currentHeight, 0)
             .wait(2000);
         }
-        var urls = yield nightmare.evaluate(function() {
+        var urls = yield nightmare_pexel.evaluate(function() {
             let image_url =[];
             let image_source_url =[];
             document.querySelectorAll('.photo-item__img').forEach((el,index)=>{
@@ -185,10 +178,9 @@ function pexels_background_search(type){
             });
             return ({image_url:image_url,image_source_url:image_source_url});
         });
-        yield nightmare.end();
+        yield nightmare_pexel.end();
         return urls;
-    };
-    
+    };    
     vo(run)(function(err,data) {
         if(data.image_url.length>0){
             for(let i=0;i<data.image_url.length;i++){         
@@ -198,10 +190,8 @@ function pexels_background_search(type){
                 image_insert_data.push(insert_image_data);
             }
            insert_data(image_insert_data);
-        }
-        
+        }    
     });
-   
 }
 
 //cancel specified job

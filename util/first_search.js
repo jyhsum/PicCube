@@ -1,7 +1,6 @@
 // This app will run when user enter a new keyword
 const request = require('request');
 const crypto = require('crypto');
-const mysql = require('./mysqlcon.js');
 const nightmareHelper = require('nightmare-helper');
 const superagent = require('superagent');
 const charset = require('superagent-charset');
@@ -52,18 +51,26 @@ function first_search(type) {
         const first_result = unsplash_result.data.concat(pixabay_result.data);
         if (first_result.length==0) { // 前三個網站都找不到資料的情況再用google search
           google(search_keyword).then(function(google_result) {
+            console.log("start google search");
             if (google_result.status==404) {
+              console.log("google no data");
               return mainResolve({data: []});
             }
             dao.image.insert_tag(type);
-            dao.image.insert_image(google_result.image_insert_data);
+            dao.image.insert_image(google_result.image_insert_data)
+              .catch(function(error){
+                console.log({error:error});
+              });
             return mainResolve({data: google_result.data});
           });
         } else {
           dao.image.insert_tag(type);
           background_search.pexels_background_search(type);
           background_search.kaboompics_background_counter(type);
-          dao.image.insert_image(unsplash_result.image_insert_data.concat(pixabay_result.image_insert_data));
+          dao.image.insert_image(unsplash_result.image_insert_data.concat(pixabay_result.image_insert_data))
+            .catch(function(error){
+              console.log({error:error});
+            });
           return mainResolve({data: unsplash_result.data.concat(pixabay_result.data)});
         }
       });
@@ -71,20 +78,19 @@ function first_search(type) {
   });
 }
 
-
 function translate_keyword(keyword) {
   return new Promise((mainResolve, _mainReject) => {
     const text = keyword;
     const target = 'en';
     translate
-        .translate(text, target)
-        .then((results) => {
-          const translation = results[0];
-          return mainResolve(translation);
-        })
-        .catch((err) => {
-          console.error('ERROR:', err);
-        });
+      .translate(text, target)
+      .then((results) => {
+        const translation = results[0];
+        return mainResolve(translation);
+      })
+      .catch((err) => {
+        console.error('ERROR:', err);
+      });
   });
 }
 
@@ -94,52 +100,50 @@ const pixabay = (type)=>{
     console.log('pixabay search');
     const baseUrl = 'https://pixabay.com/zh/images/search/'+search_keyword+'/?min_width=1920&min_height=1080&orientation=horizontal';
     superagent
-        .get(baseUrl)
-        .charset('utf-8')
-        .end(function(err, sres) {
-          if (err) {
-            console.log('ERR: ' + err);
-            return mainResolve({status: 400, msg: err});
+      .get(baseUrl)
+      .charset('utf-8')
+      .end(function(err, sres) {
+        if (err) {
+          console.log('ERR: ' + err);
+          return mainResolve({status: 400, msg: err});
+        }
+        const $ = cheerio.load(sres.text);
+        // 找不到圖片的情況
+        if (!$('div.flex_grid.credits.search_results div.item a').attr('href')) {
+          return mainResolve({status: 404, provider: pixabay, data: ''});
+        } else {
+          console.log('pixabay開始找圖片');
+          const image_url = [];
+          const image_source_url = [];
+          const image_data=[];
+          const total_page = $('form.add_search_params.pure-form.hide-xs.hide-sm.hide-md').text().trim().replace('/ ', '');
+          if (total_page>1) {
+            background_search.pixabay_background_counter(search_keyword, 2, total_page);
           }
-          const $ = cheerio.load(sres.text);
-          // 找不到圖片的情況
-          if (!$('div.flex_grid.credits.search_results div.item a').attr('href')) {
-            return mainResolve({status: 404, provider: pixabay, data: ''});
-          } else {
-            console.log('pixabay開始找圖片');
-            const image_url = [];
-            const image_source_url = [];
-            const image_data=[];
-            const total_page = $('form.add_search_params.pure-form.hide-xs.hide-sm.hide-md').text().trim().replace('/ ', '');
-            if (total_page>1) {
-              background_search.pixabay_background_counter(search_keyword, 2, total_page);
+          $('div.flex_grid.credits.search_results div.item a').each(function(_idx, element) {
+            const $element = $(element);
+            if ($element.attr('href').search('search')==-1) {
+              image_source_url.push({image_source_url: 'https://pixabay.com'+$element.attr('href')});
             }
-            $('div.flex_grid.credits.search_results div.item a').each(function(_idx, element) {
-              const $element = $(element);
-              if ($element.attr('href').search('search')==-1) {
-                image_source_url.push({image_source_url: 'https://pixabay.com'+$element.attr('href')});
-              }
+          });
+          $('div.flex_grid.credits.search_results div.item a img').each(function(_idx, element) {
+            const $element = $(element);
+            if ($element.attr('src').search('blank.gif')==-1) {
+              image_url.push({image_url: $element.attr('src')});
+            }
+          });
+          for (let i=0; i<image_url.length; i++) {
+            const image_id = crypto.randomBytes(32).toString('hex').substr(0, 8);
+            const provider = 'pixabay';
+            output_data.push({
+              image_id: image_id,
+              image_url: image_url[i].image_url,
+              image_source_url: image_source_url[i].image_source_url,
+              tag: type,
+              provider: provider,
+              author_name: 'null',
+              author_website: 'null',
             });
-
-            $('div.flex_grid.credits.search_results div.item a img').each(function(_idx, element) {
-              const $element = $(element);
-              if ($element.attr('src').search('blank.gif')==-1) {
-                image_url.push({image_url: $element.attr('src')});
-
-              }
-            });
-            for (let i=0; i<image_url.length; i++) {
-              const image_id = crypto.randomBytes(32).toString('hex').substr(0, 8);
-              const provider = 'pixabay';
-              output_data.push({
-                image_id: image_id,
-                image_url: image_url[i].image_url,
-                image_source_url: image_source_url[i].image_source_url,
-                tag: type,
-                provider: provider,
-                author_name: 'null',
-                author_website: 'null',
-              });
               const insert_image_data = [image_source_url[i].image_source_url, image_url[i].image_url, provider, type, image_id];
               image_data.push(insert_image_data);
             }
@@ -244,8 +248,5 @@ const google = (type)=>{
     });
   });
 };
-
-
-
 
 module.exports.is_chinese = is_chinese;

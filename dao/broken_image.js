@@ -72,6 +72,7 @@ let delete_broken_image = function(delete_id_list) {
                 throw error;
               });
             }
+            console.log("delete broken image data successed!");
             connection.release();
             resolve({status:200});
           });
@@ -109,6 +110,7 @@ let delete_image_like = function(delete_id_list) {
                 throw error;
               });
             }
+            console.log("delete broken image like successed!")
             connection.release();
             resolve({status:200});
           });
