@@ -28,12 +28,10 @@ function translate_keyword(keyword){
 
 //輸入框打完字後按下Go開始搜尋圖片並把 API 給前端
 app.get('/:keyword', function(req, res) {
-  //一開始就先檢查是不是有跳脫字元   
   let paging=parseInt(req.query.paging);
   if (!paging) {
     paging = 0;
   }
-
   let search_keyword = req.params.keyword;
   if (check_validStr(search_keyword)) {
     res.send({status:404, data:""});
@@ -50,7 +48,6 @@ app.get('/:keyword', function(req, res) {
               res.send({search_result:search_result});
             }
           });
-          
         });
       });
     }
@@ -67,7 +64,6 @@ app.get('/:keyword', function(req, res) {
       });
     }
   }
-  
 });
 
 
@@ -83,8 +79,6 @@ function check_validStr(str) {
   } 
 }
 
-
-
 function start_search(paging,search_keyword,origin_keyword) {
   return new Promise((mainResolve, mainReject) => {
     //Search keyword in database first
@@ -93,7 +87,7 @@ function start_search(paging,search_keyword,origin_keyword) {
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * FROM `image_data` WHERE `tag` = "'+search_keyword+'" ORDER BY `provider` ASC;',function(error, results, fields){
+      connection.query('SELECT `image_id` , `image_url`, `image_source_url` FROM `image_data` WHERE `tag` = "'+search_keyword+'"order by `image_id` DESC;',function(error, results, fields){
         connection.release();
         if(error){
           console.log(error);
@@ -103,7 +97,6 @@ function start_search(paging,search_keyword,origin_keyword) {
           let total = results.length;
           let total_page = Math.ceil(total/10);
           let lastPageCount = total%10;
-
           if(results.length>1){
               if (paging > total_page-1){
                 return mainResolve({"error": "Invalid token."});
@@ -140,22 +133,21 @@ function start_search(paging,search_keyword,origin_keyword) {
                 });                
               }              
           }    
-            //If keyword is not in database, add new pic
-            else{          
-              console.log("key word is not in DB");
-              first_search.is_chinese(search_keyword)
-              .then((first_search_result)=>{
-                let output = first_search_result.data;
-                similar_keyword(search_keyword).then((result)=>{
-                  if(result.similar_result){
-                    return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,similar_search:result.similar_result,origin_keyword:origin_keyword});
-                  }
-                  else{
-                    return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,origin_keyword:origin_keyword});
-                  }
-                });
+          //If keyword is not in database, add new pic
+          else{          
+            console.log("key word is not in DB");
+            first_search.is_chinese(search_keyword).then((first_search_result)=>{
+              let output = first_search_result.data;
+              similar_keyword(search_keyword).then((result)=>{
+                if(result.similar_result){
+                  return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,similar_search:result.similar_result,origin_keyword:origin_keyword});
+                }
+                else{
+                  return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,origin_keyword:origin_keyword});
+                }
               });
-            }    
+            });
+          }    
         }     
       });  
     });
@@ -165,13 +157,12 @@ function start_search(paging,search_keyword,origin_keyword) {
 function similar_keyword(search_keyword){
   return new Promise((mainResolve, mainReject) => {
     let new_keyword = "%"+String(search_keyword.split("")).replace(/,/g,"%")+"%";
-
     mysql.pool.getConnection(function(error, connection) {
       if(error){
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * from `tag` where `tag_name` like "'+new_keyword+'" LIMIT 0,5;',function(error, similar_result, fields){
+      connection.query('SELECT `tag_name` from `tag` where `tag_name` like "'+new_keyword+'" LIMIT 0,5;',function(error, similar_result, fields){
         connection.release();
         if(error){
           console.log(error);

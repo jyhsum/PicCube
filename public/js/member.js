@@ -1,5 +1,3 @@
-
-//檢查token
 window.onload = function(){
   localStorage.removeItem('like_item');
   let token = getCookie("Authorization");
@@ -46,7 +44,6 @@ window.onload = function(){
   }
 }
 
-
 function check_file_size(file){
   let maxsize = 2*1024*1024; //2M
   let size = document.getElementById("file-uploader").files.item(0).size;
@@ -59,8 +56,6 @@ function check_file_size(file){
 }
 
 
-
-//fetch 將檔案傳到後端
 function sent_file(file){
   let token = getCookie("Authorization");
   let form = new FormData();
@@ -72,11 +67,10 @@ function sent_file(file){
       "Authorization": "Bearer "+token
     })
   })
-  .then(response => response.json())
-  .catch(error => console.error('Error:', error))
-  .then(response => console.log('Success:', response))
-  .then(showPreviewImage(file))
-
+    .then(response => response.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response))
+    .then(showPreviewImage(file))
 }
 
 function showPreviewImage(fileObj) {
@@ -85,7 +79,6 @@ function showPreviewImage(fileObj) {
   imagePreview.src = image;
   document.getElementById('file-uploader').value ="";
 }
-
 
 function create_image (data) {
     let image_data = JSON.parse(data);
@@ -105,7 +98,6 @@ function create_image (data) {
               image_third_column.push(image_data.like_image_info[i]);
           }
       }
-
       let image_for_column=[];
       image_for_column[0] = image_first_column;
       image_for_column[1] = image_second_column;
@@ -115,8 +107,6 @@ function create_image (data) {
       }
     }
  };
-
-
 
 function addElementDiv(obj,imageinfo,column_order) {
   let parent = document.getElementsByClassName(obj);
@@ -140,9 +130,6 @@ function addImgDiv(obj,imageinfo,column_order) {
     }
 }
 
-
-
-
 function change_display_name(name){
   document.getElementsByClassName("user_name")[0].innerText = name;
 }
@@ -153,7 +140,6 @@ function insert_total_likes(likes_count){
 }
 
 function insert_profile_pic(url){
-
   if(url!='null'){
     document.getElementsByClassName("user_pic_url")[0].src = url;
   }
@@ -162,23 +148,19 @@ function insert_profile_pic(url){
   }
 }
 
-
-
-
-  function addLikeButton(obj,imageinfo){
-    let parent_pic_div = document.getElementsByClassName(obj);
-    let button = document.createElement("button");
-    button.innerHTML = "Like";
-    button.onclick = press_like_member_page;
-    for(let i=0;i<parent_pic_div.length;i++){
-      button.setAttribute("class", imageinfo.image_id);
-      button.classList.add("unclicked");
-      parent_pic_div[i].appendChild(button);
-    }
-
+function addLikeButton(obj,imageinfo){
+  let parent_pic_div = document.getElementsByClassName(obj);
+  let button = document.createElement("button");
+  button.innerHTML = "Like";
+  button.onclick = press_like_member_page;
+  for(let i=0;i<parent_pic_div.length;i++){
+    button.setAttribute("class", imageinfo.image_id);
+    button.classList.add("unclicked");
+    parent_pic_div[i].appendChild(button);
+  }
  }
 
- function press_like_member_page(){ //正常情況只會顯示喜歡過的圖片
+function press_like_member_page(){ //正常情況只會顯示喜歡過的圖片
   let storageArray = JSON.parse(localStorage.getItem('like_item')) || [];
   let token = getCookie("Authorization");
   let image_id = this.className.split(" ")[0]; //這是button的class name
@@ -191,19 +173,16 @@ function insert_profile_pic(url){
         //找目前localStorage有沒有已儲存的 如果有代表user在同一個頁面點喜歡又取消
         let id_list = get_id_list(storageArray); //先取出id轉成陣列
         let repest_id_index = id_list.indexOf(image_id); //找出重複id的index值
-
         if(repest_id_index ==-1){  //代表不是在同一個頁面點喜歡又取消
           console.log("-1");
           storageArray.push({image_id:image_id, action:"add_like"});
           localStorage.setItem('like_item',JSON.stringify(storageArray));
-
         }
         else{
           console.log("else");
           storageArray.splice(repest_id_index, 1);
           localStorage.removeItem('like_item');
           localStorage.setItem('like_item',JSON.stringify(storageArray));
-
         }
         button.classList.replace("unclicked","clicked");
         break;
@@ -217,7 +196,6 @@ function insert_profile_pic(url){
   else{
     window.alert("Please Sign in!");
   }
-
 };
 
 function get_id_list(data){
