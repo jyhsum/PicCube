@@ -48,31 +48,35 @@ function first_search(type) {
           unsplash_result.data=[];
           unsplash_result.image_insert_data=[];
         }
-        const first_result = unsplash_result.data.concat(pixabay_result.data);
-        if (first_result.length==0) { // 前三個網站都找不到資料的情況再用google search
-          google(search_keyword).then(function(google_result) {
-            console.log("start google search");
-            if (google_result.status==404) {
-              console.log("google no data");
-              return mainResolve({data: []});
-            }
+        photoac(search_keyword).then(function(photoac_result) {
+          if (photoac_result.status==404||photoac_result.status==400) {
+            photoac_result.data=[];
+            photoac_result.image_insert_data=[];
+          }
+          const first_result = unsplash_result.data.concat(pixabay_result.data).concat(photoac_result.data);
+          if (first_result.length==0) { //use google search when other websited didn't find any result
+            google(search_keyword).then(function(google_result) {
+              console.log("start google search");
+              if (google_result.status==404) {
+                console.log("google no data");
+                return mainResolve({data: []});
+              }
+              dao.image.insert_tag(type);
+              dao.image.insert_image(google_result.image_insert_data)
+                .catch(function(error){
+                  console.log({error:error});
+                });
+              return mainResolve({data: google_result.data});
+            });
+          } else {
             dao.image.insert_tag(type);
-            dao.image.insert_image(google_result.image_insert_data)
+            dao.image.insert_image(unsplash_result.image_insert_data.concat(pixabay_result.image_insert_data))
               .catch(function(error){
                 console.log({error:error});
               });
-            return mainResolve({data: google_result.data});
-          });
-        } else {
-          dao.image.insert_tag(type);
-          background_search.pexels_background_search(type);
-          background_search.kaboompics_background_counter(type);
-          dao.image.insert_image(unsplash_result.image_insert_data.concat(pixabay_result.image_insert_data))
-            .catch(function(error){
-              console.log({error:error});
-            });
-          return mainResolve({data: unsplash_result.data.concat(pixabay_result.data)});
-        }
+             return mainResolve({data: unsplash_result.data.concat(pixabay_result.data).concat(photoac_result.data)});
+          }
+        });
       });
     });
   });
@@ -97,7 +101,6 @@ function translate_keyword(keyword) {
 const pixabay = (type)=>{
   return new Promise((mainResolve, _mainReject) => {
     const output_data = [];
-    console.log('pixabay search');
     const baseUrl = 'https://pixabay.com/zh/images/search/'+search_keyword+'/?min_width=1920&min_height=1080&orientation=horizontal';
     superagent
       .get(baseUrl)
@@ -108,11 +111,10 @@ const pixabay = (type)=>{
           return mainResolve({status: 400, msg: err});
         }
         const $ = cheerio.load(sres.text);
-        // 找不到圖片的情況
+        // Didn't find any pictures.
         if (!$('div.flex_grid.credits.search_results div.item a').attr('href')) {
           return mainResolve({status: 404, provider: pixabay, data: ''});
         } else {
-          console.log('pixabay開始找圖片');
           const image_url = [];
           const image_source_url = [];
           const image_data=[];
@@ -248,5 +250,63 @@ const google = (type)=>{
     });
   });
 };
+
+const photoac = (type)=>{
+  return new Promise((mainResolve, _mainReject) => {
+    let baseUrl = 'https://photo-ac.com/en/search-result?page=1&keyword='+type+'&per_page=100&order_by=popular';
+    let image_url = [];
+    let image_source_url = [];
+    let output_data = [];
+    let image_insert_data = [];
+    superagent
+    .get(baseUrl)
+    .charset('utf-8')
+    .end(function(err, sres) {           
+      if (err) {
+        console.log('ERR: ' + err);
+        console.log({ code: 400, msg: err });
+        return;
+      }
+      let $ = cheerio.load(sres.text);
+      let total_page = $('div.number-page input[type="number"]').attr("max");
+      // Didn't find any pictures.
+      if (total_page=='0') {
+        return mainResolve({status: 404, provider: pixabay, data: ''});
+      }      
+      else if (total_page>1) {
+        background_search.photoac_background_counter(search_keyword, 2, total_page);
+      }
+
+      $('figure.gallery-image-container a').each(function(idx, element) {          
+        let $element = $(element);
+        image_source_url.push({image_source_url:"https://photo-ac.com"+$element.attr('href')});
+      });
+      $('figure.gallery-image-container div.gallery-image noscript').each(function(idx, element) {          
+        let $element = $(element);
+        image_url.push({image_url:$element.html().substring(10,94)});
+      });
+      for (let i=0; i<image_url.length; i++) {
+        const image_id = crypto.randomBytes(32).toString('hex').substr(0, 8);
+        const provider = 'photoac';
+        output_data.push({
+          image_id: image_id,
+          image_url: image_url[i].image_url,
+          image_source_url: image_source_url[i].image_source_url,
+          tag: type,
+          provider: provider
+        });
+          const insert_image_data = [image_source_url[i].image_source_url, image_url[i].image_url, provider, type, image_id];
+          image_insert_data.push(insert_image_data);
+      }
+      return mainResolve({
+        status: 200,
+        provider: 'photoac',
+        data: output_data,
+        image_insert_data: image_insert_data,
+      });
+    });
+  });
+};
+
 
 module.exports.is_chinese = is_chinese;
