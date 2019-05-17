@@ -74,7 +74,8 @@ function first_search(type) {
               .catch(function(error){
                 console.log({error:error});
               });
-             return mainResolve({data: unsplash_result.data.concat(pixabay_result.data).concat(photoac_result.data)});
+            background_search.stocksnap_background_counter(type);
+            return mainResolve({data: unsplash_result.data.concat(pixabay_result.data).concat(photoac_result.data)});
           }
         });
       });
@@ -175,7 +176,7 @@ const unsplash = (type) =>{
           if (total_pages>20) {
             end_page=20;
           }
-          background_search.unsplash_background_counter(search_keyword, 2, end_page);
+          //background_search.unsplash_background_counter(search_keyword, 2, end_page);
           data.results.forEach(function(element) {
             const image_id = element.id;
             const small_size = element.urls.small;
@@ -276,7 +277,6 @@ const photoac = (type)=>{
       else if (total_page>1) {
         background_search.photoac_background_counter(search_keyword, 2, total_page);
       }
-
       $('figure.gallery-image-container a').each(function(idx, element) {          
         let $element = $(element);
         image_source_url.push({image_source_url:"https://photo-ac.com"+$element.attr('href')});
