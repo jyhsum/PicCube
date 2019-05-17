@@ -28,64 +28,58 @@ function translate_keyword(keyword){
 
 //輸入框打完字後按下Go開始搜尋圖片並把 API 給前端
 app.get('/:keyword', function(req, res) {
-  //一開始就先檢查是不是有跳脫字元   
   let paging=parseInt(req.query.paging);
-  if(!paging){
+  if (!paging) {
     paging = 0;
   }
-
   let search_keyword = req.params.keyword;
-  if (check_validStr(search_keyword)){
+  if (check_validStr(search_keyword)) {
     res.send({status:404, data:""});
   }
-  else{
-    if (escape(search_keyword).indexOf("%u") !=-1){
+  else {
+    if (escape(search_keyword).indexOf("%u") !=-1) {
       translate_keyword(search_keyword).then(function(translate_result){
-        start_search(paging,translate_result.toLowerCase(),search_keyword).then(function(search_result){
+        start_search(paging,translate_result.toLowerCase(),search_keyword).then(function(search_result) {
           similar_keyword(translate_result.toLowerCase()).then((result)=>{
-            if(result.similar_result){
+            if (result.similar_result) {
               res.send({search_result:search_result,similar_result:result.similar_result});
             }
-            else{
+            else {
               res.send({search_result:search_result});
             }
           });
-          
         });
       });
     }
-    else{
-      start_search(paging,search_keyword,search_keyword).then(function(search_result){
+    else {
+      start_search(paging,search_keyword,search_keyword).then(function(search_result) {
         similar_keyword(search_keyword).then((result)=>{
-          if(result.similar_result){
+          if (result.similar_result) {
             res.send({search_result:search_result,similar_result:result.similar_result});
           }
-          else{
+          else {
             res.send({search_result:search_result});
           }
         });
       });
     }
   }
-  
 });
 
 
-function check_validStr(str){
+function check_validStr(str) {
   let validStr = new Array("<",">",".","!","\/","\\");
-  for (let i=0;i<validStr.length;i++){ 
-    for (let j=0;j<str.length;j++){
+  for (let i=0;i<validStr.length;i++) { 
+    for (let j=0;j<str.length;j++) {
       ch=str.substr(j,1);
-      if (ch==validStr[i]){ 
+      if (ch==validStr[i]) { 
         return true; //如果包含禁止字元回傳true
       }
     } 
   } 
 }
 
-
-
-function start_search(paging,search_keyword,origin_keyword){
+function start_search(paging,search_keyword,origin_keyword) {
   return new Promise((mainResolve, mainReject) => {
     //Search keyword in database first
     mysql.pool.getConnection(function(error, connection) {
@@ -93,7 +87,7 @@ function start_search(paging,search_keyword,origin_keyword){
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * FROM `image_data` WHERE `tag` = "'+search_keyword+'" ORDER BY `provider` ASC;',function(error, results, fields){
+      connection.query('SELECT `image_id` , `image_url`, `image_source_url` FROM `image_data` WHERE `tag` = "'+search_keyword+'"order by `image_id` DESC;',function(error, results, fields){
         connection.release();
         if(error){
           console.log(error);
@@ -101,17 +95,16 @@ function start_search(paging,search_keyword,origin_keyword){
         }
         else{
           let total = results.length;
-          let total_page = Math.ceil(total/15);
-          let lastPageCount = total%15;
-
+          let total_page = Math.ceil(total/10);
+          let lastPageCount = total%10;
           if(results.length>1){
               if (paging > total_page-1){
                 return mainResolve({"error": "Invalid token."});
               }
               else if(paging==total_page-1){
                 let display_data = [];
-                let data_start = paging*15;
-                let data_end = paging*15+lastPageCount-1;                   
+                let data_start = paging*10;
+                let data_end = paging*10+lastPageCount-1;                   
                 for(let i =data_start;i<=data_end;i++){
                   display_data.push(results[i]);
                 }
@@ -125,8 +118,8 @@ function start_search(paging,search_keyword,origin_keyword){
               }
               else{
                 let display_data = [];
-                let data_start = paging*15;
-                let data_end = paging*15+14;
+                let data_start = paging*10;
+                let data_end = paging*10+9;
                 for(let i =data_start;i<=data_end;i++){
                   display_data.push(results[i]);
               }    
@@ -140,22 +133,21 @@ function start_search(paging,search_keyword,origin_keyword){
                 });                
               }              
           }    
-            //If keyword is not in database, add new pic
-            else{          
-              console.log("key word is not in DB");
-              first_search.is_chinese(search_keyword)
-              .then((first_search_result)=>{
-                let output = first_search_result.data;
-                similar_keyword(search_keyword).then((result)=>{
-                  if(result.similar_result){
-                    return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,similar_search:result.similar_result,origin_keyword:origin_keyword});
-                  }
-                  else{
-                    return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,origin_keyword:origin_keyword});
-                  }
-                });
+          //If keyword is not in database, add new pic
+          else{          
+            console.log("key word is not in DB");
+            first_search.is_chinese(search_keyword).then((first_search_result)=>{
+              let output = first_search_result.data;
+              similar_keyword(search_keyword).then((result)=>{
+                if(result.similar_result){
+                  return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,similar_search:result.similar_result,origin_keyword:origin_keyword});
+                }
+                else{
+                  return mainResolve({note:"Search from internet.",tag:search_keyword,data:output,origin_keyword:origin_keyword});
+                }
               });
-            }    
+            });
+          }    
         }     
       });  
     });
@@ -165,13 +157,12 @@ function start_search(paging,search_keyword,origin_keyword){
 function similar_keyword(search_keyword){
   return new Promise((mainResolve, mainReject) => {
     let new_keyword = "%"+String(search_keyword.split("")).replace(/,/g,"%")+"%";
-
     mysql.pool.getConnection(function(error, connection) {
       if(error){
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT * from `tag` where `tag_name` like "'+new_keyword+'" LIMIT 0,5;',function(error, similar_result, fields){
+      connection.query('SELECT `tag_name` from `tag` where `tag_name` like "'+new_keyword+'" LIMIT 0,5;',function(error, similar_result, fields){
         connection.release();
         if(error){
           console.log(error);
