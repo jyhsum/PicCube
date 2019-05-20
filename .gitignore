@@ -4,3 +4,4 @@ node_modules/
 nohup.out
 text.js
 run.sh
+images_db.sql

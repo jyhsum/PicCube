@@ -80,8 +80,9 @@ let photoac_background_counter = (type,start_page,end_page)=>{
 
 
 let stocksnap_background_counter = (type)=>{
+  let search_param = type.replace(/\s/g,"+");
   let image_insert_data =[];
-  let baseUrl = 'https://stocksnap.io/api/search-photos/'+type+'/relevance/desc/1';
+  let baseUrl = 'https://stocksnap.io/api/search-photos/'+search_param+'/relevance/desc/1';
   request(baseUrl, function (error, response, body) {
     if (!error && response.statusCode == 200) {  
       let data = JSON.parse(body);      
@@ -144,7 +145,7 @@ function photoac_background_search(type,page){
       image_url.push({image_url:$element.html().substring(10,94)});
     });
     for(let i=0;i<image_url.length;i++){
-      let image_id = i+crypto.randomBytes(32).toString('hex').substr(0,8);
+      let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
       let provider = "photoac"
       let insert_image_data = [image_source_url[i].image_source_url,image_url[i].image_url,provider,type,image_id];
       img_insert_data.push(insert_image_data);
@@ -155,7 +156,6 @@ function photoac_background_search(type,page){
 
 
 function stocksnap_background_search(type,page){
-//https://stocksnap.io/api/search-photos/apple/relevance/desc/1
   let image_insert_data =[];
   let baseUrl = 'https://stocksnap.io/api/search-photos/'+type+'/relevance/desc/'+page;
   request(baseUrl, function (error, response, body) {
@@ -164,7 +164,7 @@ function stocksnap_background_search(type,page){
       page = data.results.nextPage;
       if(page!=='false'){
         data.results.forEach(function(element) {
-          let image_id = element.img_id;
+          let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
           let image_url = 'https://cdn.stocksnap.io/img-thumbs/280h/'+element.img_id+'.jpg';
           let image_source_url = 'https://stocksnap.io/photo/'+element.img_id;
           let provider = "stocksnap";
@@ -216,7 +216,7 @@ function pixabay_background_search(type,page) {
             }
           });
           for(let i=0;i<image_url.length;i++){
-            let image_id = i+crypto.randomBytes(32).toString('hex').substr(0,8);
+            let image_id = crypto.randomBytes(32).toString('hex').substr(0,8);
             let provider = "pixabay"       
             let insert_image_data = [image_source_url[i].image_source_url,image_url[i].image_url,provider,type,image_id];
             image_data.push(insert_image_data);

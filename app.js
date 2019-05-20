@@ -140,18 +140,12 @@ function like_unlike_list(data, email) {
 
 
 
-//var server = app.listen(80, function() {
-//  var host = server.address().address
-//  var port = server.address().port
-//  console.log("http://%s:%s", host, port)
-
-//});
-
-
-var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(443, function () {
-    console.log('listening on port 443!');
+var server = app.listen(5566, function() {
+  var host = server.address().address
+  var port = server.address().port
+  console.log("http://%s:%s", host, port)
 });
+
 
 
 
