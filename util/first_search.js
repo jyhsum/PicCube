@@ -115,7 +115,8 @@ const pixabay = (type)=>{
         // Didn't find any pictures.
         if (!$('div.flex_grid.credits.search_results div.item a').attr('href')) {
           return mainResolve({status: 404, provider: pixabay, data: ''});
-        } else {
+        } 
+        else {
           const image_url = [];
           const image_source_url = [];
           const image_data=[];
@@ -147,17 +148,17 @@ const pixabay = (type)=>{
               author_name: 'null',
               author_website: 'null',
             });
-              const insert_image_data = [image_source_url[i].image_source_url, image_url[i].image_url, provider, type, image_id];
-              image_data.push(insert_image_data);
-            }
-            return mainResolve({
-              status: 200,
-              provider: 'pixabay',
-              data: output_data,
-              image_insert_data: image_data,
-            });
+            const insert_image_data = [image_source_url[i].image_source_url, image_url[i].image_url, provider, type, image_id];
+            image_data.push(insert_image_data);
           }
-        });
+          return mainResolve({
+            status: 200,
+            provider: 'pixabay',
+            data: output_data,
+            image_insert_data: image_data,
+          });
+        }
+      });
   });
 };
 
@@ -176,7 +177,7 @@ const unsplash = (type) =>{
           if (total_pages>20) {
             end_page=20;
           }
-          //background_search.unsplash_background_counter(search_keyword, 2, end_page);
+          background_search.unsplash_background_counter(search_keyword, 2, end_page);
           data.results.forEach(function(element) {
             const image_id = element.id;
             const small_size = element.urls.small;

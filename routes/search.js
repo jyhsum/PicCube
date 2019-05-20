@@ -47,7 +47,11 @@ app.get('/:keyword', function(req, res) {
             else {
               res.send({search_result:search_result});
             }
+          }).catch(function(error){
+            console.log({error:error});
           });
+        }).catch(function(error){
+          console.log({error:error});
         });
       });
     }
@@ -60,7 +64,11 @@ app.get('/:keyword', function(req, res) {
           else {
             res.send({search_result:search_result});
           }
+        }).catch(function(error){
+          console.log({error:error});
         });
+      }).catch(function(error){
+        console.log({error:error});
       });
     }
   }
@@ -68,12 +76,12 @@ app.get('/:keyword', function(req, res) {
 
 
 function check_validStr(str) {
-  let validStr = new Array("<",">",".","!","\/","\\");
+  let validStr = new Array("<",">",".","!","\/","\\","*");
   for (let i=0;i<validStr.length;i++) { 
     for (let j=0;j<str.length;j++) {
       ch=str.substr(j,1);
       if (ch==validStr[i]) { 
-        return true; //如果包含禁止字元回傳true
+        return true; 
       }
     } 
   } 
@@ -87,7 +95,7 @@ function start_search(paging,search_keyword,origin_keyword) {
         console.log(error);
         return mainReject({error:"Error in connection database."});
       }
-      connection.query('SELECT `image_id` , `image_url`, `image_source_url` FROM `image_data` WHERE `tag` = "'+search_keyword+'"order by `image_id` DESC;',function(error, results, fields){
+      connection.query('SELECT `image_id` , `image_url`, `image_source_url` FROM `image_data` WHERE `tag` = "'+search_keyword+'";',function(error, results, fields){
         connection.release();
         if(error){
           console.log(error);
@@ -156,7 +164,7 @@ function start_search(paging,search_keyword,origin_keyword) {
 
 function similar_keyword(search_keyword){
   return new Promise((mainResolve, mainReject) => {
-    let new_keyword = "%"+String(search_keyword.split("")).replace(/,/g,"%")+"%";
+    let new_keyword = String(search_keyword.split("")).replace(/,/g,"%")+"%";
     mysql.pool.getConnection(function(error, connection) {
       if(error){
         console.log(error);
