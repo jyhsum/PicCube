@@ -12,4 +12,4 @@ run.sh
 images_db.sql
 
 #test files
-text/
+test_files/
