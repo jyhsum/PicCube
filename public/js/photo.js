@@ -193,7 +193,7 @@ window.addEventListener('scroll', function(e) {
   let last_known_scroll_position = window.scrollY;
   let pic_column_height = document.getElementsByClassName("pic_column")[0].clientHeight;
   let loader = document.getElementsByClassName("lds-roller")[0];
-  if (last_known_scroll_position+pic_column_height>=document.body.clientHeight) {
+  if (last_known_scroll_position+pic_column_height+500>=document.body.clientHeight) {
     if(!page){ //last page let loader disappear
       loader.style.display = "none"; 
       read_data_flag = false;

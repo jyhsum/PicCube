@@ -34,7 +34,6 @@ div.login li{
     
 }
 
-
 div.login ul li button{
     font-size: 110%;
     background-color:black;
@@ -57,10 +56,9 @@ div.home{
     padding-top: 10px;
 }
 
-
 .recommand_pic{
-    margin-top: 50px;
-    width: 100%;
+    margin: 0 auto;
+    width: 90%;
     background-color: white;
     filter:alpha(opacity=50);opacity:0.7;zoom:1;
     display: flex;
@@ -68,14 +66,9 @@ div.home{
     font-size: 5vh;    
 }
 
-.pic_column:first-child{
-    margin-left: 13%;  
-
-}
-
 .pic_column{
-    margin: 40px 0px;
-    width: 25%;
+    margin: 10px 0px;
+    width: 40%;
     text-align: center;
     display: flex;
     flex-direction: column
@@ -84,9 +77,9 @@ div.home{
 .hot_image{
     max-width: 100%;
     padding: 0;
-    width:auto;
+    width:inherit;;
     height:auto;
-    max-height:100%;
+    max-height:100%; 
 }
 
 #profile_button{
@@ -94,13 +87,9 @@ div.home{
     text-decoration:none;
 }
 
-
 div.pic_div{
-    width: 85%;
-    margin-top: 5%;
-    margin-bottom: 40px;
+    width: 98.5%;
     position: relative;
-    
 }
 
 div.pic_div:hover > button {
@@ -120,7 +109,8 @@ div.pic_div button{
     right: 10px; 
     z-index:99;
     display: none;
-}
+} 
+
 
 
 div.pic_div button.unclicked{
