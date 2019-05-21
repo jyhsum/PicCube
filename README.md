@@ -1,8 +1,12 @@
 # [PicCube](https://jyhsum.com)
 ### A website helps you to search beautiful wallpapers
 
-## Ficture
+## Preview
+![](https://i.imgur.com/cefp2EA.png)
 
+
+
+## Ficture
 * Enter the keyword in the search bar, pictures will be displayed
 * PicCube will search the data from other populor websites
 * By clicking the "source" button on the pictures, user can go to origin websites and download the pictures
@@ -56,12 +60,22 @@ Facebook Login API
 Google translation API
 
 ### Error handling
-* Show not found, when user input bad search keyword.
+* Show corresponding respond when user input bad search keyword.
  ![](https://i.imgur.com/pU6ufZX.png)
+ 
 * If there are any broken picture, hide them first, and store the image ids in localstorage, after user leave the page, send the data to backend and delete them from database
 
 
 ### Database Schema
+![](https://i.imgur.com/2tpIIcg.png)
+
+
+##### Designed with optimized database structure
+* Database Normalization
+* Proper index and foreign key setting
+* Transaction
+* Connection pool
+* Optimized query syntex 
 
 
 ### Architecture
