@@ -169,18 +169,11 @@ div.header input[type=text] {
     border-radius: 4px;
 } 
 
-div.header input[type=submit] {
-    color: gray;
+button#search_button{
+    font-size: 20px;
+    overflow: hidden;
+    background: transparent;
     border: none;
-    height: 20px;
     width: 40px;
-    font-size: 15px;
-    outline: none;
-    font-family: muli,Helvetica,Arial,sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin: 0 0 0 -50px;
-    border-radius: 4px;
-    cursor: pointer;
-    -webkit-appearance: none;
+    margin: 0 0 0 -60px;
 }
