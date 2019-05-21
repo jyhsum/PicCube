@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="default.css" media="all" />
 	<link rel="icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="./picture/icon/sugar.ico" type="image/x-icon" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 </head>
 <body>
 	<div class="header">
@@ -25,30 +26,19 @@
 		<div class ="home">
 			<a href="/"><img src="./picture/icon/piccube.png" alt=""></a>
 		</div>
-		<div class="search_top">
-			<form method ="get" accept-charset="UTF-8" id="search_top" action = "photo.html">
-					<input type="text" name="search" placeholder="Search for photos..." required="required" >
-					<input type="submit" value="Go">
-			</form>
-		</div>
 	</div>
 	
 	<div class="main_area">	
 		<div class="search_area">
-			<h1>Search for beautiful wallpapers.</h1>	
+			<h1>Discover Your Perfect Wallpapers on PicCube</h1>	
 			<form method ="get" accept-charset="UTF-8" id="search" action = "photo.html">
-				<input type="text" name="search" placeholder="Search for photos..." required="required" >
-				<input type="submit" value="Go">
+				<input type="text" name="search" placeholder="Search for photos..." required="required">
+				<button type="submit" i class="fas fa-search" id="search_button">
 			</form>
 		</div>
-		<!-- <div class="author">
-			<a href="https://unsplash.com/photos/t9OGCATN-vg">Photo by Dino Reichmuth</a>
-		</div> -->
 	</div>
-
+	<div class="trending"><h2>Popular Wallpapers this week</h2></div>
 	<div class="recommand_pic"></div>
-		
-
 	<footer>
 
 	</footer>

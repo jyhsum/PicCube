@@ -1,7 +1,15 @@
+#config files
 ssl/
 config/
+
+# Dependency directories
 node_modules/
-nohup.out
-text.js
+
+#script file
 run.sh
+
+#backup file
 images_db.sql
+
+#test files
+text/
