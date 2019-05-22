@@ -30,23 +30,6 @@ CREATE TABLE `broken_image` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `image_author`
---
-
-DROP TABLE IF EXISTS `image_author`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `image_author` (
-  `author_id` int(11) NOT NULL AUTO_INCREMENT,
-  `author_name` varchar(100) DEFAULT NULL,
-  `author_website` varchar(100) DEFAULT NULL,
-  `image_id` varchar(200) NOT NULL,
-  PRIMARY KEY (`author_id`),
-  KEY `image_id` (`image_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=106935 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `image_data`
 --
 
@@ -127,4 +110,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-05-22  9:01:58
+-- Dump completed on 2019-05-22  9:09:56
