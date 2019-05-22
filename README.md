@@ -84,8 +84,128 @@ Google translation API
 
 
 ### API documentation
+# Search API
+* End Point: `/photo/search`
+* Method:`GET`
+* Query Parameters
+
+|Field         | Type    |Description | 
+|:------------:|:-------:|:----------:|
+|keyword       | String  |Required    | 
+|paging        | String(Optional)| Paging for request next page. | 
 
 
+* Request Example:
+`https://[HOST_NAME]/photo/apple` 
+`https://[HOST_NAME]/photo/apple?paging=1`
+* Success Response: 
+
+|Field         | Type    |Description | 
+|:------------:|:-------:|------------|
+|note          | String  |The source of the search result| 
+|tag           | String  |This is the search keyword| 
+|data          | Array   |Array of Image Object| 
+|paging        | Number  | If there are no more pages, server will not return paging parameter. |
+|origin_keyword| String  |This is the keyword before translated.    | 
+* Success Response Example:
+    
+1. When search keyword is in database.
+```
+{
+    search_result: {
+        note: "Search from Database.",
+        total_images: 1823,
+        total_page: 183,
+        tag: "apple",
+        paging: 2,
+        data: [
+            {
+                image_id: "016aa7a54",
+                image_url: "https://cdn.pixabay.com/photo/2013/12/14/01/45/leaves-            228138__340.jpg",
+                image_source_url: "https://pixabay.com/zh/photos/%E5%8F%B6%E5%AD%90-%E9%BB%84%E8%89%B2-%E7%A7%8B%E5%AD%A3-%E7%A7%8B%E5%A4%A9%E7%9A%84%E8%90%BD%E5%8F%B6-228138/"
+            },
+            {
+                image_id: "0185be9ae",
+                image_url: "https://cdn.pixabay.com/photo/2015/06/25/17/22/smart-watch-821559__340.jpg",
+                image_source_url: "https://pixabay.com/zh/photos/%E6%99%BA%E8%83%BD%E6%89%8B%E8%A1%A8-%E8%8B%B9%E6%9E%9C-%E6%8A%80%E6%9C%AF-%E9%A3%8E%E6%A0%BC-821559/"
+            },
+            {
+                image_id: "019705cd5",
+                image_url: "https://cdn.pixabay.com/photo/2018/04/03/08/01/branch-3286202__340.jpg",
+                image_source_url: "https://pixabay.com/zh/photos/%E5%88%86%E6%94%AF-%E6%A0%91-%E8%8A%B1-%E5%AD%A3%E8%8A%82-%E6%96%B0%E9%B2%9C-3286202/"
+            }
+        ]
+    },
+    similar_result: [ ]
+}
+```
+
+2. When search keyword is not in database, this is the API after web crawing.
+```
+{
+    search_result: {
+        note: "Search from internet.",
+        tag: "orange",
+        data: [
+            {
+                image_id: "GAM-7l4QzmI",
+                image_url: "https://images.unsplash.com/photo-1530982011887-3cc11cc85693?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9",
+                image_source_url: "https://unsplash.com/photos/GAM-7l4QzmI",
+                tag: "orange",
+                provider: "unsplash"
+            },
+            {
+                image_id: "zxbNbuncq1g",
+                image_url: "https://images.unsplash.com/photo-1492760864391-753aaae87234?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9",
+                image_source_url: "https://unsplash.com/photos/zxbNbuncq1g",
+                tag: "orange",
+                provider: "unsplash"
+            },
+            {
+                image_id: "Hyu76loQLdk",
+                image_url: "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9",
+                image_source_url: "https://unsplash.com/photos/Hyu76loQLdk",
+                tag: "orange",
+                provider: "unsplash"
+            },
+            {
+                image_id: "nibgG33H0F8",
+                image_url: "https://images.unsplash.com/photo-1547514701-42782101795e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjEyMDd9",
+                image_source_url: "https://unsplash.com/photos/nibgG33H0F8",
+                tag: "orange",
+                provider: "unsplash"
+            }
+        ],
+        origin_keyword: "橘子"
+    }
+}
+
+```
+3. When there isn't any picture found after web crawing.
+```
+{
+    search_result: {
+        note: "Search from internet.",
+        tag: "sdergwetrthertyh1111",
+        data: [ ],
+        origin_keyword: "sdergwetrthertyh1111"
+    }
+}
+```
+
+
+* Error Response: 4XX
+
+|Field         | Type    |Description | 
+|:------------:|:-------:|:----------:|
+|status        | Number  |Required    | 
+
+* Error Response Example:
+```
+{
+    status: 404
+}
+```
 
 
 
