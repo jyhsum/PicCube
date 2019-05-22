@@ -58,12 +58,12 @@ button#search_button{
 }
 
 div.trending{
-    margin-top: 20px;
-    padding-left: 5%; 
-    font-weight: 400;
+    letter-spacing: 5px;
+    margin-top: 60px;
+    margin-bottom: 25px;
+    padding-left: 40%; 
+    font-weight: 500;
     font-size: 3vh;
-    color: rgb(51, 51, 51);
+    color: lightslategray;
 }
-
-
 
