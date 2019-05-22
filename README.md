@@ -46,6 +46,11 @@
 * jQuery
 * JavaScript
 
+### Web Crawler
+* superagent
+* cheerio
+* nightmare.js
+
 ### AWS Cloud Platform
 * EC2
 * S3
