@@ -202,9 +202,56 @@ Google translation API
     status: 404
 }
 ```
+### Member Page API
+* End Point: `/member`
+* Method:`POST`
+* Request Headers:
+
+|Field         | Type    |Description | 
+|:------------:|:-------:|------------|
+|Authorization | String  |Access token preceding Bearer. For example: `Bearer x48aDD534da8ADSD1XC4SD5S`    | 
 
 
+* Request Example:
+`https://[HOST_NAME]/member` 
 
+* Success Response: 
+```
+{
+    "status": 200,
+    "user_name": "Peter",
+    "user_email": "xxx@gmail.com",
+    "user_pic": "https://jyhsum.s3.us-east-2.amazonaws.com/id_10_profile_picture_1558174668813",
+    "total_likes": 2,
+    "like_image_info": [
+        {
+            "image_id": "bb4788f2",
+            "image_url": "https://cdn.wallpapersafari.com/10/11/RLZ0r1.jpg",
+            "image_source_url": "https://wallpapersafari.com/w/RLZ0r1"
+        },
+        {
+            "image_id": "baef4c7a",
+            "image_url": "http://images6.fanpop.com/image/photos/39200000/Dear-Santa-TaeTiSeo-taeyeon-demmah-39201435-2000-1194.jpg",
+            "image_source_url": "http://www.fanpop.com/clubs/demmah/images/39201435/title/santa-taetiseo-taeyeon-wallpaper"
+        }
+    ]
+}
+```
+
+* Error Response: 4XX
+
+|Field|Type  |Description   | 
+|:---:|:----:|--------------|
+|status |Number|Http status code.| 
+|note |String|Error message.| 
+
+
+* Error Response Example:
+```
+{
+    "status": 403,
+    "note": "Wrong token."
+}
 
 
 
