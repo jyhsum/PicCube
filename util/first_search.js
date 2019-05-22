@@ -108,7 +108,7 @@ const pixabay = (type)=>{
       .charset('utf-8')
       .end(function(err, sres) {
         if (err) {
-          console.log('ERR: ' + err);
+          console.log({ code: 400, msg: err ,provider:"pixabay"});
           return mainResolve({status: 400, msg: err});
         }
         const $ = cheerio.load(sres.text);
@@ -205,7 +205,7 @@ const unsplash = (type) =>{
           return mainResolve({status: 404, provider: 'unsplash', data: ''});
         }
       } else {
-        return mainResolve({status: 400, msg: error});
+        return mainResolve({status: 400, msg: error,provider:"unsplash"});
       }
     });
   });
@@ -265,9 +265,8 @@ const photoac = (type)=>{
     .charset('utf-8')
     .end(function(err, sres) {           
       if (err) {
-        console.log('ERR: ' + err);
-        console.log({ code: 400, msg: err });
-        return;
+        console.log({ code: 400, msg: err ,provider:"photoac"});
+        mainResolve({ status: 400, msg: err });
       }
       let $ = cheerio.load(sres.text);
       let total_page = $('div.number-page input[type="number"]').attr("max");
