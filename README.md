@@ -2,7 +2,7 @@
 ### A website helps you to search beautiful wallpapers
 
 ## Preview
-![](https://i.imgur.com/cefp2EA.png)
+![](https://i.imgur.com/goFExuI.gif)
 
 
 
