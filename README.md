@@ -252,10 +252,3 @@ Google translation API
     "status": 403,
     "note": "Wrong token."
 }
-
-
-
-
-
-
-
