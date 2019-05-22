@@ -34,10 +34,10 @@
 
 ## Technologies
 ### Backend
-Node.js / Express
-Web Crawling 
-NGINX
-JWT Authentication	
+Node.js / Express  
+Web Crawling   
+NGINX  
+JWT Authentication  
 
 ### Front-End
 HTML
