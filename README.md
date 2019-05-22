@@ -72,12 +72,10 @@
 ## Database Schema
 ![](https://i.imgur.com/2tpIIcg.png)
 
-##### Designed with optimized database structure
 * Database Normalization
-* Proper index and foreign key setting
+* Index and foreign key setting
 * Transaction
 * Connection pool
-* Optimized query syntex 
 
 ## API documentation
 ### Search API
