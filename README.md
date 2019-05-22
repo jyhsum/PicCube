@@ -34,36 +34,36 @@
 
 ## Technologies
 ### Backend
-Node.js / Express  
-Web Crawling   
-NGINX  
-JWT Authentication  
+* Node.js / Express
+* Web Crawling 
+* NGINX
+* JWT Authentication
 
 ### Front-End
-HTML
-CSS
-RWD
-jQuery
-JavaScript	
+* HTML
+* CSS
+* RWD
+* jQuery
+* JavaScript
 
 ### AWS Cloud Platform
-EC2
-S3
-CloudFront (CDN)
-Elastic Load Balancer	
+* EC2
+* S3
+* CloudFront (CDN)
+* Elastic Load Balancer	
 
 ### Tools
-Git
-Mocha (Unit Test)
-Docker
+* Git
+* Mocha (Unit Test)
+* Docker
 
 ### Database 
-MySQL 
+* MySQL 
 
 
 ### Third Party
-Facebook Login API
-Google translation API
+* Facebook Login API
+* Google translation API
 
 ## Architecture
 
