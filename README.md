@@ -25,6 +25,12 @@
 * After user input search keyword, search from database first, if there isn't any matching result, PicCube will start web crawing, otherwise, PicCube shows all corresponding pictures
 * While PicCube starts web crawing, in order to decrease waiting time, PicCube will reture some pictures on the page first, and keep crawing in background, while user scroll down the page, PicCube will continuously provide new pictures till run out of data
 
+## Error handling
+* Show corresponding respond when user input bad search keyword.
+ ![](https://i.imgur.com/pU6ufZX.png)
+ 
+* If there are any broken picture, hide them first, and store the image ids in localstorage, after user leave the page, send the data to backend and delete them from database
+
 
 ## Technologies
 ### Backend
@@ -59,16 +65,12 @@ MySQL
 Facebook Login API
 Google translation API
 
-### Error handling
-* Show corresponding respond when user input bad search keyword.
- ![](https://i.imgur.com/pU6ufZX.png)
- 
-* If there are any broken picture, hide them first, and store the image ids in localstorage, after user leave the page, send the data to backend and delete them from database
+## Architecture
 
+![](https://i.imgur.com/5CF1w3z.png)
 
-### Database Schema
+## Database Schema
 ![](https://i.imgur.com/2tpIIcg.png)
-
 
 ##### Designed with optimized database structure
 * Database Normalization
@@ -76,12 +78,6 @@ Google translation API
 * Transaction
 * Connection pool
 * Optimized query syntex 
-
-
-### Architecture
-
-![](https://i.imgur.com/5CF1w3z.png)
-
 
 ## API documentation
 ### Search API
