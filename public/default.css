@@ -90,7 +90,18 @@ div.home{
 div.pic_div{
     width: 98.5%;
     position: relative;
+    overflow:hidden;
+    margin-bottom: 10px;
 }
+
+div.pic_div img{
+    transform:scale(1,1);
+    transition: all 4s ease-out;
+}
+div.pic_div img:hover{
+    transform:scale(1.1,1.1);
+}
+
 
 div.pic_div:hover > button {
     display: block;
