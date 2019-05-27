@@ -75,7 +75,7 @@
 ![](https://i.imgur.com/5CF1w3z.png)
 
 ## Database Schema
-![](https://i.imgur.com/mVzJxwe.png)
+![](https://i.imgur.com/c6Pkqky.png)
 
 * Database Normalization
 * Index and foreign key setting
