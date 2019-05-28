@@ -47,9 +47,9 @@
 * JavaScript
 
 ### Web Crawler
-* superagent
-* cheerio
-* nightmare.js
+* Superagent
+* Cheerio
+* Nightmare.js
 
 ### AWS Cloud Platform
 * EC2
