@@ -13,3 +13,7 @@ images_db.sql
 
 #test files
 test_files/
+
+#MySQL connection
+
+util/mysqlcon.js

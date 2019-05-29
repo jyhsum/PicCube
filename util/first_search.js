@@ -70,7 +70,7 @@ function first_search(type) {
             });
           } else {
             dao.image.insert_tag(type);
-            dao.image.insert_image(unsplash_result.image_insert_data.concat(pixabay_result.image_insert_data))
+            dao.image.insert_image(unsplash_result.image_insert_data.concat(pixabay_result.image_insert_data).concat(photoac_result.image_insert_data))
               .catch(function(error){
                 console.log({error:error});
               });
@@ -179,7 +179,7 @@ const unsplash = (type) =>{
           }
           background_search.unsplash_background_counter(search_keyword, 2, end_page);
           data.results.forEach(function(element) {
-            const image_id = element.id;
+            const image_id = crypto.randomBytes(32).toString('hex').substr(0, 8);
             const small_size = element.urls.small;
             const image_source_url = element.links.html;
             const provider = 'unsplash';
