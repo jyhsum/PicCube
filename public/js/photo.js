@@ -110,19 +110,17 @@ function addImgDiv(obj,imageinfo,column_order) {
   for(let z=0; z< imageinfo.length; z++){
       let div =  document.createElement("div");
       div.setAttribute("class", "pic_div");
-      div.innerHTML = "<a href='"+imageinfo[z].image_source_url+"' target='_blank' >Source</a>"+"<img src='"+imageinfo[z].image_url+"' alt='"+imageinfo[z].image_id+"' class='hot_image' border='0' onerror='error_pic(\""+imageinfo[z].image_id +"\")' />";
+      div.setAttribute("id", imageinfo[z].image_id);
+      div.innerHTML = "<a href='"+imageinfo[z].image_source_url+"' target='_blank' >SOURCE</a>"+"<img src='"+imageinfo[z].image_url+"' class='hot_image' border='0' onerror='error_pic(\""+imageinfo[z].image_id +"\")' />";
       parent_pic_column[column_order].appendChild(div);
       let button = document.createElement("button");
-      button.innerHTML = "Like";
+      button.innerHTML = "+LIKE";
       button.onclick = press_like;
       button.setAttribute("class", imageinfo[z].image_id);
       button.classList.add("unclicked");
       div.appendChild(button);      
   }
-  
-
 }
-
 
 function press_like(){
   let storageArray = JSON.parse(localStorage.getItem('like_item')) || [];
@@ -182,7 +180,7 @@ function read_new_pic(nextpage) {
     };
     xhttp.onerror = function() { reject("Error") };
     xhttp.send();
-    })
+  })
 }
 
 
