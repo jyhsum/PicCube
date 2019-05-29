@@ -1,4 +1,4 @@
-const mysql = require('../util/mysqlcon.js');
+const mysql = require('../config/mysqlcon.js');
 
 let get = function(){
     return new Promise(function(resolve, reject){

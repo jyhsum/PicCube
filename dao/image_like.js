@@ -1,4 +1,4 @@
-const mysql = require('../util/mysqlcon.js');
+const mysql = require('../config/mysqlcon.js');
 
 
 let add_like_image = function(insert_image_like,like_list){

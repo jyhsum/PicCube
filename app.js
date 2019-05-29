@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const mysql = require("./util/mysqlcon.js");
+const mysql = require("./config/mysqlcon.js");
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const config = require('./config/development_config');
