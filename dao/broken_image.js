@@ -1,4 +1,4 @@
-const mysql = require('../util/mysqlcon.js');
+const mysql = require('../config/mysqlcon.js');
 const insert_broken_id = 'INSERT INTO broken_image(`image_id`)VALUES ?';
 const delete_image_data = 'DELETE FROM image_data WHERE (`image_id`) IN (?)';
 const delete_image_like_query = 'DELETE FROM image_like WHERE (`image_id`) IN (?)';

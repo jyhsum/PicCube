@@ -1,4 +1,4 @@
-const mysql = require('../util/mysqlcon.js');
+const mysql = require('../config/mysqlcon.js');
 const insert_tag_data = 'insert into tag(`tag_name`)VALUES (?)';
 const sql_image_data = 'insert into image_data(`image_source_url`,`image_url`,`provider`, `tag`,`image_id`)VALUES  ?';
 

@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express.Router();
-const mysql = require("../util/mysqlcon.js");
+const mysql = require("../config/mysqlcon.js");
 const first_search = require("../util/first_search.js");
 const {Translate} = require('@google-cloud/translate');
 const projectId = 'jyhsum';
