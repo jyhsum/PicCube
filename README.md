@@ -4,13 +4,13 @@
 ## Preview
 ![](https://i.imgur.com/goFExuI.gif)
 
-####  [Ficture](#ficture)
-####  [Procedures](#procedures)
-####  [Technologies](#technologies)
-####  [Error handling](#error-handling)
-####  [Architecture](#architecture)
-####  [Database Schema](#database-schema)
-####  [API documentation](#api-documentation)
+####  [Ficture](#ficture-1)
+####  [Procedures](#procedures-1)
+####  [Technologies](#technologies-1)
+####  [Error handling](#error-handling-1)
+####  [Architecture](#architecture-1)
+####  [Database Schema](#database-schema-1)
+####  [API documentation](#api-documentation-1)
    * [Search Api](#search-api)
    * [Member Page Api](#member-page-api)
 
