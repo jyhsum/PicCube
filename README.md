@@ -5,10 +5,10 @@
 ![](https://i.imgur.com/goFExuI.gif)
 
 ####  [Ficture](#ficture-1)
-####  [Procedures](#procedures-1)
 ####  [Technologies](#technologies-1)
-####  [Error handling](#error-handling-1)
 ####  [Architecture](#architecture-1)
+####  [Procedures](#procedures-1)
+####  [Error handling](#error-handling-1)
 ####  [Database Schema](#database-schema-1)
 ####  [API documentation](#api-documentation-1)
    * [Search Api](#search-api)
@@ -26,21 +26,6 @@
 * Also, PicCube allows the user to upload their own profile picture
 * Popular Wallpapers of the week will be displayed on home page
 * PicCube now has 300,000+ image, now let's get started!
-
-## Procedures
-* Show popular wallpapers and total like amount on home page
-* Check login status first on every page, if user's login, show user's name on the header 
-* If there are any picture on the page user has clicked "like", turn the like button into red
-* Store the image id in local storage first after user click or unclick like button and send the data to the server after user leave the page
-* After user input search keyword, search from the database first, if there isn't any matching result, PicCube will start web crawling, otherwise, PicCube shows all corresponding pictures
-* While PicCube starts web crawling, in order to decrease waiting time, PicCube will show some pictures on the page first, and keep crawling in the background, while user scroll down the page, PicCube will continuously provide new pictures till running out of data
-
-## Error handling
-* Show corresponding respond when user input bad search keyword.
- ![](https://i.imgur.com/pU6ufZX.png)
- 
-* If there are any broken picture, hide them first, and store the image id in local storage, after the user leaves the page, send the data to the server and delete them from database
-
 
 ## Technologies
 ### Backend
@@ -81,8 +66,21 @@
 * Google translation API
 
 ## Architecture
+![](https://i.imgur.com/qXVMm68.png)
 
-![](https://i.imgur.com/5CF1w3z.png)
+## Procedures
+* Show popular wallpapers and total like amount on home page
+* Check login status first on every page, if user's login, show user's name on the header 
+* If there are any picture on the page user has clicked "like", turn the like button into red
+* Store the image id in local storage first after user click or unclick like button and send the data to the server after user leave the page
+* After user input search keyword, search from the database first, if there isn't any matching result, PicCube will start web crawling, otherwise, PicCube shows all corresponding pictures
+* While PicCube starts web crawling, in order to decrease waiting time, PicCube will show some pictures on the page first, and keep crawling in the background, while user scroll down the page, PicCube will continuously provide new pictures till running out of data
+
+## Error handling
+* Show corresponding respond when user input bad search keyword.
+ ![](https://i.imgur.com/pU6ufZX.png)
+ 
+* If there are any broken picture, hide them first, and store the image id in local storage, after the user leaves the page, send the data to the server and delete them from databas
 
 ## Database Schema
 ![](https://i.imgur.com/c6Pkqky.png)
