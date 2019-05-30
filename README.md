@@ -37,7 +37,6 @@
 ### Front-End
 * HTML
 * CSS
-* RWD
 * jQuery
 * JavaScript
 
@@ -49,32 +48,23 @@
 ### AWS Cloud Platform
 * EC2
 * S3
-* CloudFront (CDN)
-* Elastic Load Balancer	
 
 ### Tools
 * Git
 * Mocha (Unit Test)
-* Docker
 
 ### Database 
 * MySQL 
-
 
 ### Third Party
 * Facebook Login API
 * Google translation API
 
 ## Architecture
-![](https://i.imgur.com/qXVMm68.png)
-
-## Procedures
-* Show popular wallpapers and total like amount on home page
-* Check login status first on every page, if user's login, show user's name on the header 
-* If there are any picture on the page user has clicked "like", turn the like button into red
-* Store the image id in local storage first after user click or unclick like button and send the data to the server after user leave the page
-* After user input search keyword, search from the database first, if there isn't any matching result, PicCube will start web crawling, otherwise, PicCube shows all corresponding pictures
-* While PicCube starts web crawling, in order to decrease waiting time, PicCube will show some pictures on the page first, and keep crawling in the background, while user scroll down the page, PicCube will continuously provide new pictures till running out of data
+![](https://i.imgur.com/QiFSauy.png)
+1. After receiving requests from clients through 443 port, NGINX forwards requests to corresponding ports according to domain names.
+2. Search keyword from the database first, if there isn't any matching result, the app starts web crawling, otherwise, showing all corresponding pictures on the page.
+3. After searching finishes, stores all necessary data in MySQL.
 
 ## Error handling
 * Show corresponding respond when user input bad search keyword.
