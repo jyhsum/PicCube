@@ -7,7 +7,6 @@
 ####  [Ficture](#ficture-1)
 ####  [Technologies](#technologies-1)
 ####  [Architecture](#architecture-1)
-####  [Procedures](#procedures-1)
 ####  [Error handling](#error-handling-1)
 ####  [Database Schema](#database-schema-1)
 ####  [API documentation](#api-documentation-1)
