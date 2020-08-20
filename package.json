@@ -6,7 +6,7 @@
   "dependencies": {
     "@google-cloud/translate": "^3.0.1",
     "aws-sdk": "^2.441.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.18.3",
     "cheerio": "^1.0.0-rc.2",
     "co": "^4.6.0",
